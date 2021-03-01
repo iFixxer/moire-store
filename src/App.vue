@@ -133,8 +133,8 @@ export default {
     this.loadCart();
   },
   methods: {
-    ...mapActions(["loadCart"]),
-    ...mapMutations(["updateUserAccessKey"])
+    ...mapActions("cart", ["loadCart"]),
+    ...mapMutations("cart", ["updateUserAccessKey"])
   }
 };
 </script>

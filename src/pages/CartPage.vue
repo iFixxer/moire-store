@@ -42,7 +42,7 @@
           </p>
 
           <router-link
-            v-if="$store.state.cartProducts.length"
+            v-if="products.length"
             tag="button"
             :to="{ name: 'order' }"
             class="cart__button button button--primery"
@@ -65,7 +65,7 @@ export default {
   filters: { numberFormat },
   components: { CartItem },
   computed: {
-    ...mapGetters({
+    ...mapGetters("cart", {
       products: "cartDetailproducts",
       totalPrice: "cartTotalPrice",
       totalAmount: "cartTotalAmount"

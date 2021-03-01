@@ -8,7 +8,8 @@
           :src="image.gallery ? image.gallery[0].file.url : noPhoto"
           :alt="image.gallery ? image.gallery[0].file.url : noPhoto"
           :class="{
-            'pics__link pics__link--current': currentImage === image.gallery[0].file.url
+            'pics__link pics__link--current':
+              currentImage === (image.gallery ? image.gallery[0].file.url : noPhoto)
           }"
         />
       </a>

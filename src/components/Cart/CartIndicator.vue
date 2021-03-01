@@ -1,6 +1,5 @@
 <template>
   <router-link
-    v-if="cartLoad"
     class="header__cart"
     href="cart.html"
     aria-label="Корзина с товарами"
@@ -9,22 +8,18 @@
     <svg width="19" height="24">
       <use xlink:href="#icon-cart"></use>
     </svg>
-    <span class="header__count" aria-label="Количество товаров">{{
-      $store.state.cartProducts.length
-    }}</span>
+    <span class="header__count" aria-label="Количество товаров">{{ cartProducts.length }}</span>
   </router-link>
-  <span v-else class="header__tel">Загрузка...</span>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
-  data() {
-    return {
-      cartLoad: false
-    };
-  },
-  created() {
-    this.cartLoad = true;
+  computed: {
+    ...mapState({
+      cartProducts: state => state.cart.cartProducts
+    })
   }
 };
 </script>

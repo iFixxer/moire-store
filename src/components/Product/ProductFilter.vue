@@ -108,7 +108,7 @@ export default {
     numberFormat
   },
   computed: {
-    ...mapGetters({
+    ...mapGetters("products", {
       categoriesData: "categoriesData",
       colorsData: "colorsData",
       materialsData: "materialsData",
@@ -129,7 +129,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["loadCategoriesData", "loadColorsData", "loadMaterialsData", "loadSeasonsData"]),
+    ...mapActions("products", [
+      "loadCategoriesData",
+      "loadColorsData",
+      "loadMaterialsData",
+      "loadSeasonsData"
+    ]),
 
     submit() {
       if (this.currentPriceFrom != null) {

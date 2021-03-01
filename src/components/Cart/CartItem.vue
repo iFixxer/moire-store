@@ -61,7 +61,7 @@ export default {
         return this.item.amount;
       },
       set(value) {
-        this.$store.dispatch("updateCartProductAmount", {
+        this.$store.dispatch("cart/updateCartProductAmount", {
           basketItemId: this.item.basketItemId,
           amount: value
         });
@@ -69,7 +69,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["deleteCartProduct"]),
+    ...mapActions("cart", ["deleteCartProduct"]),
 
     deleteProduct() {
       this.deleteCartProduct({ basketItemId: this.item.basketItemId });

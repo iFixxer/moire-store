@@ -69,7 +69,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
+    ...mapGetters("products", {
       productsData: "productsData"
     }),
 
@@ -88,7 +88,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["loadProductsData"]),
+    ...mapActions("products", ["loadProductsData"]),
 
     loadProducts() {
       NProgress.start();

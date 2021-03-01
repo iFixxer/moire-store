@@ -103,7 +103,7 @@
               Доставка: <b>{{ deliveryPrice }} ₽</b>
             </p>
             <p>
-              Итого товаров: <b>{{ $store.state.cartProducts.length }}</b> на сумму
+              Итого товаров: <b>{{ products.length }}</b> на сумму
               <b>{{ (Number(totalPrice) + Number(deliveryPrice)) | numberFormat }} ₽</b>
             </p>
           </div>
@@ -111,7 +111,7 @@
           <button
             class="cart__button button button--primery"
             type="submit"
-            v-if="$store.state.cartProducts.length > 0"
+            v-if="products.length > 0"
           >
             Оформить заказ
           </button>
@@ -121,7 +121,7 @@
             <center>
               <h4>Ошибка при отправке заказа!</h4>
               <p v-if="orderSendingFailed">
-                {{ formErrorMessage }}
+                {{ orderErrorMessage }}
               </p>
             </center>
           </div>
@@ -159,7 +159,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
+    ...mapActions("order", [
       "loadOrderPaymentTypes",
       "loadOrderDeliveryTypes",
       "loadOrderData",
@@ -187,15 +187,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
+    ...mapGetters("cart", {
       products: "cartDetailproducts",
-      totalPrice: "cartTotalPrice",
+      totalPrice: "cartTotalPrice"
+    }),
+    ...mapGetters("order", {
       paymentTypes: "paymentTypes",
       deliveryTypes: "deliveryTypes",
-      open: "open",
       orderSendingFailed: "orderSendingFailed",
-      formError: "formError",
-      formErrorMessage: "formErrorMessage"
+      open: "open",
+      formError: "orderError",
+      formErrorMessage: "orderErrorMessage"
     })
   },
   watch: {

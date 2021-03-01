@@ -129,12 +129,12 @@ export default {
   filters: { numberFormat },
   components: { OrderInfoItem },
   computed: {
-    ...mapGetters({
+    ...mapGetters("order", {
       order: "orderInfo"
     })
   },
   methods: {
-    ...mapActions(["loadOrderInfo"]),
+    ...mapActions("order", ["loadOrderInfo"]),
 
     loadOrder() {
       this.loadOrderInfo({

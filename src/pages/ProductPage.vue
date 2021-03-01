@@ -1,6 +1,12 @@
 <template>
   <div>
-    <main class="content container" v-if="!product">Не удалось загрузить товар.</main>
+    <main class="content container" v-if="!product">
+      <center>
+        <h2>
+          Не удалось загрузить товар.
+        </h2>
+      </center>
+    </main>
     <main class="content container" v-else>
       <div class="content__top">
         <ul class="breadcrumbs">
@@ -89,6 +95,12 @@
                     <h4 v-if="productAdded">
                       Товар добавлен в корзину
                     </h4>
+                    <h4 v-if="cartAddingFailed">
+                      Ошибка!
+                    </h4>
+                    <p v-if="cartAddingFailed">
+                      {{ cartErrorMessage }}
+                    </p>
                   </center>
                 </div>
               </vue-modaltor>
@@ -150,11 +162,8 @@ export default {
       currentColorId: null,
       currentImage: null,
       amount: 1,
-      open: false,
 
-      incorrectSize: false,
-      productAdded: false,
-      productAddSending: false
+      incorrectSize: false
     };
   },
   filters: {
@@ -162,9 +171,17 @@ export default {
   },
   components: { ProductRadioButtons, ProductAmountButtons, ProductGallery },
   computed: {
-    ...mapGetters({
+    ...mapGetters("products", {
       product: "productData",
       productLoadingFailed: "productLoadingFailed"
+    }),
+    ...mapGetters("cart", {
+      productAddSending: "productAddSending",
+      cartAddingFailed: "cartAddingFailed",
+      productAdded: "productAdded",
+      open: "open",
+      cartError: "cartError",
+      cartErrorMessage: "cartErrorMessage"
     }),
     sizes() {
       return this.product ? this.product.sizes : [];
@@ -174,32 +191,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["addProductToCart", "loadProductData"]),
+    ...mapActions("products", ["loadProductData"]),
+    ...mapActions("cart", ["addProductToCart", "closeModal", "openModal"]),
 
     addToCart() {
       if (this.currentSizeId > 0) {
-        this.productAdded = false;
-        this.productAddSending = true;
-        this.open = true;
-
+        this.openModal();
         this.addProductToCart({
           productId: this.product.id,
           colorId: this.currentColorId,
           sizeId: this.currentSizeId,
           amount: this.amount
-        }).then(() => {
-          this.productAdded = true;
-          this.productAddSending = false;
         });
       } else {
         this.incorrectSize = true;
-        this.open = true;
+        this.openModal();
       }
-      this.productAdded = false;
-      this.productAddSending = false;
     },
     hideModal() {
-      this.open = false;
+      this.closeModal();
     }
   },
   watch: {
