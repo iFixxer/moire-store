@@ -149,8 +149,7 @@ import ProductQuantityButtons from "@/components/Product/ProductQuantityButtons"
 import ProductGallery from "@/components/Product/ProductGallery";
 import noPhoto from "@/assets/img/noPhoto.jpg";
 import numberFormat from "@/helpers/numberFormat";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { ProductRadioButtons, ProductQuantityButtons, ProductGallery },

@@ -52,8 +52,7 @@
 import ProductList from "@/components/Product/ProductList";
 import BasePagination from "@/components/Base/BasePagination";
 import ProductFilter from "@/components/Product/ProductFilter";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { ProductList, BasePagination, ProductFilter },

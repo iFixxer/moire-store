@@ -85,8 +85,7 @@ import ProductFilterRadioButtons from "@/components/Product/ProductFilterRadioBu
 import ProductFilterCheckboxMaterials from "@/components/Product/ProductFilterCheckboxMaterials";
 import ProductFilterCheckboxSeasons from "@/components/Product/ProductFilterCheckboxSeasons";
 import numberFormat from "@/helpers/numberFormat";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {

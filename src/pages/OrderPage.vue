@@ -138,8 +138,7 @@ import OrderItem from "@/components/Order/OrderItem";
 import OrderDelivery from "@/components/Order/OrderDelivery";
 import OrderPayment from "@/components/Order/OrderPayment";
 import numberFormat from "@/helpers/numberFormat";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { BaseFormText, BaseFormTextarea, OrderDelivery, OrderPayment, OrderItem },

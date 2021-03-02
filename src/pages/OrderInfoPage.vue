@@ -122,8 +122,7 @@
 <script>
 import OrderItem from "@/components/Order/OrderItem";
 import numberFormat from "@/helpers/numberFormat";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { OrderItem },
