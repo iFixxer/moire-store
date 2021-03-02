@@ -25,7 +25,10 @@
 
 <script>
 export default {
-  props: ["paymentTypes", "paymentTypeId"],
+  props: {
+    paymentTypes: Array,
+    paymentTypeId: Number
+  },
   computed: {
     computedPaymentTypeId: {
       get() {

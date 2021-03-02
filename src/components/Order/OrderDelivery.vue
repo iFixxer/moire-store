@@ -25,7 +25,11 @@
 
 <script>
 export default {
-  props: ["deliveryTypes", "deliveryTypeId", "deliveryPrice"],
+  props: {
+    deliveryTypes: Array,
+    deliveryTypeId: Number,
+    deliveryPrice: String
+  },
   computed: {
     computedDeliveryTypeId: {
       get() {

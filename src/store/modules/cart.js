@@ -26,12 +26,12 @@ const getters = {
   },
   cartTotalPrice(state, getters) {
     return getters.cartDetailproducts.reduce(
-      (acc, item) => item.product.price * item.amount + acc,
+      (acc, item) => item.product.price * item.quantity + acc,
       0
     );
   },
-  cartTotalAmount(state, getters) {
-    return getters.cartDetailproducts.reduce((acc, item) => item.amount + acc, 0);
+  cartTotalQuantity(state, getters) {
+    return getters.cartDetailproducts.reduce((acc, item) => item.quantity + acc, 0);
   },
   productAddSending(state) {
     return state.productAddSending;
@@ -50,9 +50,6 @@ const getters = {
   },
   cartErrorMessage(state) {
     return state.cartErrorMessage;
-  },
-  closeModal(context) {
-    context.commit("updateOpen", false);
   }
 };
 
@@ -74,7 +71,7 @@ const actions = {
         context.commit("syncCartProducts");
       });
   },
-  addProductToCart(context, { productId, colorId, sizeId, amount }) {
+  addProductToCart(context, { productId, colorId, sizeId, quantity }) {
     context.commit("updateCartAddingFailed", false);
     context.commit("updateProductAdded", false);
     context.commit("updateProductAddSending", true);
@@ -85,7 +82,7 @@ const actions = {
           productId: productId,
           colorId: colorId.id,
           sizeId: sizeId,
-          quantity: amount
+          quantity: quantity
         },
         {
           params: {
@@ -112,10 +109,10 @@ const actions = {
         }
       });
   },
-  updateCartProductAmount(context, { basketItemId, amount }) {
-    context.commit("updateCartProductAmount", { basketItemId, amount });
+  updateCartProductQuantity(context, { basketItemId, quantity }) {
+    context.commit("updateCartProductQuantity", { basketItemId, quantity });
 
-    if (amount < 1) {
+    if (quantity < 1) {
       return;
     }
 
@@ -124,7 +121,7 @@ const actions = {
         API_BASE_URL + "/api/baskets/products",
         {
           basketItemId: basketItemId,
-          quantity: amount
+          quantity: quantity
         },
         {
           params: {
@@ -171,11 +168,11 @@ const mutations = {
   updateCartProductsData(state, items) {
     state.cartProductsData = items;
   },
-  updateCartProductAmount(state, { basketItemId, amount }) {
+  updateCartProductQuantity(state, { basketItemId, quantity }) {
     const item = state.cartProducts.find(item => item.basketItemId === basketItemId);
 
     if (item) {
-      item.amount = amount;
+      item.quantity = quantity;
     }
   },
   syncCartProducts(state) {
@@ -183,7 +180,7 @@ const mutations = {
       return {
         basketItemId: item.id,
         product: item.product,
-        amount: item.quantity,
+        quantity: item.quantity,
         color: item.color,
         size: item.size
       };

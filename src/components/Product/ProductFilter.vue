@@ -52,17 +52,17 @@
 
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
-        <CheckboxMaterialButtons
+        <ProductFilterCheckboxMaterials
           :materials="materials"
           :select-material-ids.sync="selectMaterialIds"
         >
-        </CheckboxMaterialButtons>
+        </ProductFilterCheckboxMaterials>
       </fieldset>
 
       <fieldset class="form__block">
         <legend class="form__legend">Коллекция</legend>
-        <CheckboxSeasonButtons :seasons="seasons" :select-season-ids.sync="selectSeasonIds">
-        </CheckboxSeasonButtons>
+        <ProductFilterCheckboxSeasons :seasons="seasons" :select-season-ids.sync="selectSeasonIds">
+        </ProductFilterCheckboxSeasons>
       </fieldset>
 
       <button class="filter__submit button button--primery" type="submit" :blocked="submitDisabled">
@@ -82,13 +82,29 @@
 
 <script>
 import ProductFilterRadioButtons from "@/components/Product/ProductFilterRadioButtons";
-import CheckboxMaterialButtons from "@/components/Product/CheckboxMaterialButtons";
-import CheckboxSeasonButtons from "@/components/Product/CheckboxSeasonButtons";
+import ProductFilterCheckboxMaterials from "@/components/Product/ProductFilterCheckboxMaterials";
+import ProductFilterCheckboxSeasons from "@/components/Product/ProductFilterCheckboxSeasons";
+import numberFormat from "@/helpers/numberFormat";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
-import numberFormat from "@/helpers/numberFormat";
 
 export default {
+  components: {
+    ProductFilterRadioButtons,
+    ProductFilterCheckboxMaterials,
+    ProductFilterCheckboxSeasons
+  },
+  filters: {
+    numberFormat
+  },
+  props: {
+    priceFrom: Number,
+    priceTo: Number,
+    categoryId: Number,
+    colorIds: Array,
+    materialIds: Array,
+    materialIds: Array
+  },
   data() {
     return {
       currentPriceFrom: 0,
@@ -102,82 +118,13 @@ export default {
       submitDisabled: true
     };
   },
-  components: { ProductFilterRadioButtons, CheckboxMaterialButtons, CheckboxSeasonButtons },
-  props: ["priceFrom", "priceTo", "categoryId", "colorIds", "materialIds", "seasonIds"],
-  filters: {
-    numberFormat
-  },
   computed: {
     ...mapGetters("products", {
-      categoriesData: "categoriesData",
-      colorsData: "colorsData",
-      materialsData: "materialsData",
-      seasonsData: "seasonsData"
-    }),
-
-    categories() {
-      return this.categoriesData ? this.categoriesData.items : [];
-    },
-    colors() {
-      return this.colorsData ? this.colorsData.items : [];
-    },
-    materials() {
-      return this.materialsData ? this.materialsData.items : [];
-    },
-    seasons() {
-      return this.seasonsData ? this.seasonsData.items : [];
-    }
-  },
-  methods: {
-    ...mapActions("products", [
-      "loadCategoriesData",
-      "loadColorsData",
-      "loadMaterialsData",
-      "loadSeasonsData"
-    ]),
-
-    submit() {
-      if (this.currentPriceFrom != null) {
-        this.$emit("update:priceFrom", this.currentPriceFrom);
-      }
-      if (this.currentPriceTo != null) {
-        this.$emit("update:priceTo", this.currentPriceTo);
-      }
-      if (this.currentCategoryId != null) {
-        this.$emit("update:categoryId", this.currentCategoryId);
-      }
-      this.$emit("update:colorIds", this.selectColorIds);
-      this.$emit("update:materialIds", this.selectMaterialIds);
-      this.$emit("update:seasonIds", this.selectSeasonIds);
-    },
-    reset() {
-      if (this.currentPriceFrom != 0) {
-        this.$emit("update:priceFrom", 0);
-      }
-      if (this.currentPriceTo != 0) {
-        this.$emit("update:priceTo", 0);
-      }
-      if (this.currentCategoryId != 0) {
-        this.$emit("update:categoryId", 0);
-      }
-      if (this.selectColorIds.length > 0) {
-        this.$emit("update:colorIds", (this.selectColorIds = []));
-      }
-      if (this.selectMaterialIds.length > 0) {
-        this.$emit("update:materialIds", (this.selectMaterialIds = []));
-      }
-      if (this.selectSeasonIds.length > 0) {
-        this.$emit("update:seasonIds", (this.selectSeasonIds = []));
-      }
-    },
-    clearMinPrice() {
-      if (document.getElementById("min-price").value == 0)
-        document.getElementById("min-price").value = "";
-    },
-    clearMaxPrice() {
-      if (document.getElementById("max-price").value == 0)
-        document.getElementById("max-price").value = "";
-    }
+      categories: "categoriesData",
+      colors: "colorsData",
+      materials: "materialsData",
+      seasons: "seasonsData"
+    })
   },
   watch: {
     priceFrom(value) {
@@ -246,6 +193,57 @@ export default {
     this.loadColorsData();
     this.loadMaterialsData();
     this.loadSeasonsData();
+  },
+  methods: {
+    ...mapActions("products", [
+      "loadCategoriesData",
+      "loadColorsData",
+      "loadMaterialsData",
+      "loadSeasonsData"
+    ]),
+
+    submit() {
+      if (this.currentPriceFrom != null) {
+        this.$emit("update:priceFrom", this.currentPriceFrom);
+      }
+      if (this.currentPriceTo != null) {
+        this.$emit("update:priceTo", this.currentPriceTo);
+      }
+      if (this.currentCategoryId != null) {
+        this.$emit("update:categoryId", this.currentCategoryId);
+      }
+      this.$emit("update:colorIds", this.selectColorIds);
+      this.$emit("update:materialIds", this.selectMaterialIds);
+      this.$emit("update:seasonIds", this.selectSeasonIds);
+    },
+    reset() {
+      if (this.currentPriceFrom != 0) {
+        this.$emit("update:priceFrom", 0);
+      }
+      if (this.currentPriceTo != 0) {
+        this.$emit("update:priceTo", 0);
+      }
+      if (this.currentCategoryId != 0) {
+        this.$emit("update:categoryId", 0);
+      }
+      if (this.selectColorIds.length > 0) {
+        this.$emit("update:colorIds", (this.selectColorIds = []));
+      }
+      if (this.selectMaterialIds.length > 0) {
+        this.$emit("update:materialIds", (this.selectMaterialIds = []));
+      }
+      if (this.selectSeasonIds.length > 0) {
+        this.$emit("update:seasonIds", (this.selectSeasonIds = []));
+      }
+    },
+    clearMinPrice() {
+      if (document.getElementById("min-price").value == 0)
+        document.getElementById("min-price").value = "";
+    },
+    clearMaxPrice() {
+      if (document.getElementById("max-price").value == 0)
+        document.getElementById("max-price").value = "";
+    }
   }
 };
 </script>

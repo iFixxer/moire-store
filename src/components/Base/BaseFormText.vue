@@ -16,7 +16,12 @@
 import formFieldMixin from "@/mixins/formFieldMixin";
 
 export default {
-  props: ["type", "id", "maxlength", "mask"],
+  props: {
+    type: String,
+    id: String,
+    maxlength: String,
+    mask: String
+  },
   mixins: [formFieldMixin]
 };
 </script>

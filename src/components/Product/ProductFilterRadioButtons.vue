@@ -17,7 +17,10 @@
 
 <script>
 export default {
-  props: ["colors", "selectColorIds"],
+  props: {
+    colors: Array,
+    selectColorIds: Array
+  },
   computed: {
     computedColors: {
       get() {

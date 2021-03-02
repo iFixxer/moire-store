@@ -7,6 +7,10 @@ const state = () => ({
   productData: null,
   productLoadingFailed: false,
 
+  open: false,
+  productError: {},
+  productErrorMessage: "",
+
   categoriesData: null,
   colorsData: null,
   materialsData: null,
@@ -32,8 +36,17 @@ const getters = {
   productData(state) {
     return state.productData;
   },
+  open(state) {
+    return state.open;
+  },
   productLoadingFailed(state) {
     return state.productLoadingFailed;
+  },
+  productError(state) {
+    return state.productError;
+  },
+  productErrorMessage(state) {
+    return state.productErrorMessage;
   }
 };
 
@@ -57,42 +70,56 @@ const actions = {
       })
       .then(response => {
         context.commit("updateProductsData", response.data);
+      })
+      .catch(error => {
+        context.commit("updateProductLoadingFailed", true);
+        context.commit("updateProductError", error.response.data.error);
+        if (error.response.status == 500)
+          context.commit("updateProductErrorMessage", error.response.data.error.message);
+        context.commit("updateOpen", true);
       });
   },
   loadCategoriesData(context) {
-    axios.get(API_BASE_URL + `/api/productCategories`).then(response => {
-      context.commit("updateCategoriesData", response.data);
+    return axios.get(API_BASE_URL + `/api/productCategories`).then(response => {
+      context.commit("updateCategoriesData", response.data.items);
     });
   },
   loadColorsData(context) {
-    axios.get(API_BASE_URL + `/api/colors`).then(response => {
-      context.commit("updateColorsData", response.data);
+    return axios.get(API_BASE_URL + `/api/colors`).then(response => {
+      context.commit("updateColorsData", response.data.items);
     });
   },
   loadMaterialsData(context) {
-    axios.get(API_BASE_URL + `/api/materials`).then(response => {
-      context.commit("updateMaterialsData", response.data);
+    return axios.get(API_BASE_URL + `/api/materials`).then(response => {
+      context.commit("updateMaterialsData", response.data.items);
     });
   },
   loadSeasonsData(context) {
-    axios.get(API_BASE_URL + `/api/seasons`).then(response => {
-      context.commit("updateSeasonsData", response.data);
+    return axios.get(API_BASE_URL + `/api/seasons`).then(response => {
+      context.commit("updateSeasonsData", response.data.items);
     });
   },
   loadProductData(context, { id }) {
     context.commit("updateProductLoadingFailed", false);
-    axios
+    return axios
       .get(API_BASE_URL + "/api/products/" + id)
       .then(response => {
         context.commit("updateProductData", response.data);
       })
       .catch(error => {
-        if (error.response.status == 400) {
-          this.$router.push("/notFound");
+        context.commit("updateProductLoadingFailed", true);
+        if (error.response.status == 404) {
+          throw error;
         } else {
-          context.commit("updateProductLoadingFailed", true);
+          context.commit("updateOpen", true);
         }
       });
+  },
+  openModal(context) {
+    context.commit("updateOpen", true);
+  },
+  closeModal(context) {
+    context.commit("updateOpen", false);
   }
 };
 
@@ -117,6 +144,15 @@ const mutations = {
   },
   updateProductLoadingFailed(state, productLoadingFailed) {
     state.productLoadingFailed = productLoadingFailed;
+  },
+  updateOpen(state, open) {
+    state.open = open;
+  },
+  updateProductError(state, productError) {
+    state.productError = productError;
+  },
+  updateProductErrorMessage(state, productErrorMessage) {
+    state.productErrorMessage = productErrorMessage;
   }
 };
 

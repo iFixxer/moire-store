@@ -1,3 +1,5 @@
+import store from "@/store";
+import router from "@/router";
 import axios from "axios";
 import { API_BASE_URL } from "@/config";
 
@@ -62,26 +64,26 @@ const actions = {
         }
       )
       .then(response => {
-        context.commit("cart/resetCart");
-        context.commit("updateOrderData", response.data);
-        this.$router.push({ name: "orderData", params: { id: response.data.id } });
+        if (response.data) context.commit("updateOrderData", response.data);
+        store.commit("cart/resetCart", response.data);
+        router.push({ name: "orderInfo", params: { id: response.data.id } });
       })
       .catch(error => {
         context.commit("updateOrderSendingFailed", true);
-        context.commit("updateOpen", true);
         context.commit("updateOrderError", error.response.data.error.request);
         if (error.response.data.error.message.lenght > 1) {
           context.commit("updateOrderErrorMessage", error.response.data.error.message);
         } else {
           context.commit("updateOrderErrorMessage", "Проверьте правильность заполнения полей");
         }
+        context.commit("updateOpen", true);
       });
   },
-  loadOrderInfo(context, { userAccessKey, id }) {
+  loadOrderInfo(context, { id }) {
     return axios
       .get(API_BASE_URL + `/api/orders/` + id, {
         params: {
-          userAccessKey: userAccessKey
+          userAccessKey: localStorage.getItem("userAccessKey")
         }
       })
       .then(response => {
@@ -89,7 +91,7 @@ const actions = {
       })
       .catch(error => {
         if (error.response.status == 400) {
-          $router.push("router/push", { path: "/notFound" });
+          throw error;
         }
       });
   },
@@ -136,7 +138,7 @@ const mutations = {
   updateOrderError(state, orderError) {
     state.orderError = orderError;
   },
-  updateorderErrorMessage(state, orderErrorMessage) {
+  updateOrderErrorMessage(state, orderErrorMessage) {
     state.orderErrorMessage = orderErrorMessage;
   }
 };

@@ -23,9 +23,9 @@
 
     <span class="product__code"> Артикул: {{ item.product.id }} </span>
 
-    <ProductAmountButtons :amount.sync="amount"></ProductAmountButtons>
+    <ProductQuantityButtons :quantity.sync="quantity" />
 
-    <b class="product__price"> {{ (item.amount * item.product.price) | numberFormat }} ₽ </b>
+    <b class="product__price"> {{ (item.quantity * item.product.price) | numberFormat }} ₽ </b>
 
     <button
       class="product__del button-del"
@@ -41,29 +41,31 @@
 </template>
 
 <script>
+import ProductQuantityButtons from "@/components/Product/ProductQuantityButtons";
 import noPhoto from "@/assets/img/noPhoto.jpg";
 import numberFormat from "@/helpers/numberFormat";
 import { mapActions } from "vuex";
-import ProductAmountButtons from "@/components/Product/ProductAmountButtons";
 
 export default {
+  components: { ProductQuantityButtons },
+  filters: { numberFormat },
+  props: {
+    item: Object
+  },
   data() {
     return {
       noPhoto: noPhoto
     };
   },
-  filters: { numberFormat },
-  props: ["item"],
-  components: { ProductAmountButtons },
   computed: {
-    amount: {
+    quantity: {
       get() {
-        return this.item.amount;
+        return this.item.quantity;
       },
       set(value) {
-        this.$store.dispatch("cart/updateCartProductAmount", {
+        this.$store.dispatch("cart/updateCartProductQuantity", {
           basketItemId: this.item.basketItemId,
-          amount: value
+          quantity: value
         });
       }
     }

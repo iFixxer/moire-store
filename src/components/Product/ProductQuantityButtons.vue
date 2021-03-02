@@ -6,7 +6,7 @@
       </svg>
     </button>
 
-    <input type="text" v-model="computedAmount" />
+    <input type="text" v-model="computedQuantity" />
 
     <button type="button" aria-label="Добавить один товар" @click.prevent="oneMore">
       <svg width="12" height="12" fill="currentColor">
@@ -18,25 +18,27 @@
 
 <script>
 export default {
-  props: ["amount"],
+  props: {
+    quantity: Number
+  },
   computed: {
-    computedAmount: {
+    computedQuantity: {
       get() {
-        return this.amount;
+        return this.quantity;
       },
       set(value) {
-        this.$emit("update:amount", value);
+        this.$emit("update:quantity", value);
       }
     }
   },
   methods: {
     oneLess() {
-      if (this.computedAmount > 1) {
-        return --this.computedAmount;
+      if (this.computedQuantity > 1) {
+        return --this.computedQuantity;
       }
     },
     oneMore() {
-      return ++this.computedAmount;
+      return ++this.computedQuantity;
     }
   }
 };

@@ -33,12 +33,16 @@
         <ProductList :products="products" />
         <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage" />
 
-        <div v-if="productsLoadingFailed">
-          Произошла непредвиденная ошибка.
-          <button @click.prevent="loadProducts">
-            Попробовать снова
-          </button>
-        </div>
+        <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
+          <div class="cart__error form__error-block">
+            <center>
+              <h4 v-if="productLoadingFailed">Ошибка при загрузке!</h4>
+              <p v-if="productErrorMessage">
+                {{ productErrorMessage }}
+              </p>
+            </center>
+          </div>
+        </vue-modaltor>
       </section>
     </div>
   </main>
@@ -63,14 +67,16 @@ export default {
       filterSeasonIds: [],
 
       page: 1,
-      productsPerPage: 12,
-
-      productsLoadingFailed: false
+      productsPerPage: 12
     };
   },
   computed: {
     ...mapGetters("products", {
-      productsData: "productsData"
+      productsData: "productsData",
+      productLoadingFailed: "productLoadingFailed",
+      open: "open",
+      productError: "productError",
+      productErrorMessage: "productErrorMessage"
     }),
 
     products() {
@@ -87,29 +93,6 @@ export default {
       return this.productsData ? this.productsData.pagination.total : 0;
     }
   },
-  methods: {
-    ...mapActions("products", ["loadProductsData"]),
-
-    loadProducts() {
-      NProgress.start();
-      this.productsLoadingFailed = false;
-      clearTimeout(this.loadProductsTimer);
-      this.loadProductsTimer = setTimeout(() => {
-        this.loadProductsData({
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo,
-          categoryId: this.filterCategoryId,
-          colorIds: this.filterColorIds,
-          materialIds: this.filterMaterialIds,
-          seasonIds: this.filterSeasonIds
-        })
-          .catch(() => (this.productsLoadingFailed = true))
-          .then(() => NProgress.done());
-      }, 300);
-    }
-  },
   watch: {
     page: "loadProducts",
     productsPerPage: "loadProducts",
@@ -122,6 +105,26 @@ export default {
   },
   created() {
     this.loadProducts();
+  },
+  methods: {
+    ...mapActions("products", ["loadProductsData", "closeModal", "openModal"]),
+
+    loadProducts() {
+      NProgress.start();
+      clearTimeout(this.loadProductsTimer);
+      this.loadProductsTimer = setTimeout(() => {
+        this.loadProductsData({
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo,
+          categoryId: this.filterCategoryId,
+          colorIds: this.filterColorIds,
+          materialIds: this.filterMaterialIds,
+          seasonIds: this.filterSeasonIds
+        }).then(() => NProgress.done());
+      }, 300);
+    }
   }
 };
 </script>

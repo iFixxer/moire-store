@@ -22,7 +22,10 @@
 
 <script>
 export default {
-  props: ["materials", "selectMaterialIds"],
+  props: {
+    materials: Array,
+    selectMaterialIds: Array
+  },
   computed: {
     computedMaterials: {
       get() {

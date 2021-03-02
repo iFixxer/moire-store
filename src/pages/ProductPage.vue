@@ -45,7 +45,7 @@
           <div class="item__form">
             <form class="form" action="#" method="POST" @submit.prevent="addToCart">
               <div class="item__row item__row--center">
-                <ProductAmountButtons :amount.sync="amount" :productId="this.product.id" />
+                <ProductQuantityButtons :quantity.sync="quantity" :productId="this.product.id" />
 
                 <b class="item__price"> {{ product.price | numberFormat }} ₽ </b>
               </div>
@@ -54,10 +54,7 @@
                 <fieldset class="form__block">
                   <legend class="form__legend">Цвет</legend>
 
-                  <ProductRadioButtons
-                    :colors="product.colors"
-                    :currentColorId.sync="currentColorId"
-                  >
+                  <ProductRadioButtons :colors="product.colors" :currentColor.sync="currentColor">
                   </ProductRadioButtons>
                 </fieldset>
 
@@ -83,7 +80,7 @@
                 В корзину
               </button>
 
-              <vue-modaltor :visible="open" @hide="hideModal" :show-close-button="false">
+              <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
                 <div class="cart__error form__error-block">
                   <center>
                     <h4 v-if="incorrectSize">
@@ -148,7 +145,7 @@
 
 <script>
 import ProductRadioButtons from "@/components/Product/ProductRadioButtons";
-import ProductAmountButtons from "@/components/Product/ProductAmountButtons";
+import ProductQuantityButtons from "@/components/Product/ProductQuantityButtons";
 import ProductGallery from "@/components/Product/ProductGallery";
 import noPhoto from "@/assets/img/noPhoto.jpg";
 import numberFormat from "@/helpers/numberFormat";
@@ -156,20 +153,20 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
+  components: { ProductRadioButtons, ProductQuantityButtons, ProductGallery },
+  filters: {
+    numberFormat
+  },
   data() {
     return {
       currentSizeId: 0,
-      currentColorId: null,
+      currentColor: null,
       currentImage: null,
-      amount: 1,
+      quantity: 1,
 
       incorrectSize: false
     };
   },
-  filters: {
-    numberFormat
-  },
-  components: { ProductRadioButtons, ProductAmountButtons, ProductGallery },
   computed: {
     ...mapGetters("products", {
       product: "productData",
@@ -190,32 +187,12 @@ export default {
       return this.product ? this.product.colors : [];
     }
   },
-  methods: {
-    ...mapActions("products", ["loadProductData"]),
-    ...mapActions("cart", ["addProductToCart", "closeModal", "openModal"]),
-
-    addToCart() {
-      if (this.currentSizeId > 0) {
-        this.openModal();
-        this.addProductToCart({
-          productId: this.product.id,
-          colorId: this.currentColorId,
-          sizeId: this.currentSizeId,
-          amount: this.amount
-        });
-      } else {
-        this.incorrectSize = true;
-        this.openModal();
-      }
-    },
-    hideModal() {
-      this.closeModal();
-    }
-  },
   watch: {
     "$route.params.id": {
       handler() {
-        this.loadProductData({ id: this.$route.params.id });
+        this.loadProductData({ id: this.$route.params.id }).catch(error => {
+          this.$router.push("/notFound");
+        });
       },
       immediate: true
     },
@@ -230,15 +207,15 @@ export default {
     },
     product: {
       handler() {
-        this.currentColorId = this.product.colors[0].color;
+        this.currentColor = this.product.colors[0].color;
         this.currentImage = this.product.colors[0].gallery
           ? this.product.colors[0].gallery[0].file.url
           : noPhoto;
       }
     },
-    currentColorId: {
+    currentColor: {
       handler(value) {
-        if (typeof value.color != "undefined") this.currentColorId = value.color;
+        if (typeof value.color != "undefined") this.currentColor = value.color;
         if (typeof value.gallery != "undefined") {
           if (value.gallery != null) {
             this.currentImage = value.gallery[0].file.url;
@@ -257,7 +234,26 @@ export default {
             this.currentImage = noPhoto;
           }
         }
-        if (typeof value.color != "undefined") this.currentColorId = value.color;
+        if (typeof value.color != "undefined") this.currentColor = value.color;
+      }
+    }
+  },
+  methods: {
+    ...mapActions("products", ["loadProductData"]),
+    ...mapActions("cart", ["addProductToCart", "closeModal", "openModal"]),
+
+    addToCart() {
+      if (this.currentSizeId > 0) {
+        this.openModal();
+        this.addProductToCart({
+          productId: this.product.id,
+          colorId: this.currentColor,
+          sizeId: this.currentSizeId,
+          quantity: this.quantity
+        });
+      } else {
+        this.incorrectSize = true;
+        this.openModal();
       }
     }
   }

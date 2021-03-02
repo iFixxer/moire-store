@@ -22,7 +22,10 @@
 
 <script>
 export default {
-  props: ["seasons", "selectSeasonIds"],
+  props: {
+    seasons: Array,
+    selectSeasonIds: Array
+  },
   computed: {
     computedSeasons: {
       get() {

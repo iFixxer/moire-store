@@ -8,7 +8,7 @@
     <svg width="19" height="24">
       <use xlink:href="#icon-cart"></use>
     </svg>
-    <span class="header__count" aria-label="Количество товаров">{{ cartProducts.length }}</span>
+    <span class="header__count" aria-label="Количество товаров">{{ totalCartProducts }}</span>
   </router-link>
 </template>
 
@@ -18,7 +18,7 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState({
-      cartProducts: state => state.cart.cartProducts
+      totalCartProducts: state => state.cart.cartProducts.length
     })
   }
 };

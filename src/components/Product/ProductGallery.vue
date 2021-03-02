@@ -21,7 +21,10 @@
 import noPhoto from "@/assets/img/noPhoto.jpg";
 
 export default {
-  props: ["images", "currentImage"],
+  props: {
+    images: Array,
+    currentImage: String
+  },
   data() {
     return {
       noPhoto: noPhoto

@@ -32,7 +32,7 @@
           <div class="cart__data">
             <BaseFormText
               v-model="formData.name"
-              :error="formError.name"
+              :error="orderError.name"
               title="ФИО"
               placeholder="Введите ваше полное имя"
               id="name"
@@ -41,7 +41,7 @@
 
             <BaseFormText
               v-model="formData.address"
-              :error="formError.address"
+              :error="orderError.address"
               title="Адрес доставки"
               placeholder="Введите ваш адрес"
               id="address"
@@ -50,7 +50,7 @@
 
             <BaseFormText
               v-model="formData.phone"
-              :error="formError.phone"
+              :error="orderError.phone"
               title="Телефон"
               placeholder="Введите ваш телефон"
               id="phone"
@@ -60,7 +60,7 @@
 
             <BaseFormText
               v-model="formData.email"
-              :error="formError.email"
+              :error="orderError.email"
               title="Email"
               placeholder="Введи ваш Email"
               id="email"
@@ -69,7 +69,7 @@
 
             <BaseFormTextarea
               v-model="formData.comment"
-              :error="formError.comment"
+              :error="orderError.comment"
               title="Комментарий к заказу"
               placeholder="Ваши пожелания"
               id="comment"
@@ -116,7 +116,7 @@
             Оформить заказ
           </button>
         </div>
-        <vue-modaltor :visible="open" @hide="hideModal" :show-close-button="false">
+        <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
           <div class="cart__error form__error-block">
             <center>
               <h4>Ошибка при отправке заказа!</h4>
@@ -142,8 +142,8 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
-  filters: { numberFormat },
   components: { BaseFormText, BaseFormTextarea, OrderDelivery, OrderPayment, OrderItem },
+  filters: { numberFormat },
   data() {
     return {
       formData: {
@@ -157,6 +157,31 @@ export default {
       },
       deliveryPrice: "0"
     };
+  },
+  computed: {
+    ...mapGetters("cart", {
+      products: "cartDetailproducts",
+      totalPrice: "cartTotalPrice"
+    }),
+    ...mapGetters("order", {
+      paymentTypes: "paymentTypes",
+      deliveryTypes: "deliveryTypes",
+      orderSendingFailed: "orderSendingFailed",
+      open: "open",
+      orderError: "orderError",
+      orderErrorMessage: "orderErrorMessage"
+    })
+  },
+  watch: {
+    deliveryPrice: {
+      handler() {
+        this.changeOrderType();
+      }
+    }
+  },
+  created() {
+    this.changeOrderType();
+    this.loadOrderDeliveryTypes();
   },
   methods: {
     ...mapActions("order", [
@@ -181,46 +206,21 @@ export default {
     },
     changeOrderType() {
       this.loadOrderPaymentTypes({ deliveryTypeId: this.formData.deliveryTypeId });
-    },
-    hideModal() {
-      this.closeModal();
     }
-  },
-  computed: {
-    ...mapGetters("cart", {
-      products: "cartDetailproducts",
-      totalPrice: "cartTotalPrice"
-    }),
-    ...mapGetters("order", {
-      paymentTypes: "paymentTypes",
-      deliveryTypes: "deliveryTypes",
-      orderSendingFailed: "orderSendingFailed",
-      open: "open",
-      formError: "orderError",
-      formErrorMessage: "orderErrorMessage"
-    })
-  },
-  watch: {
-    deliveryPrice: {
-      handler() {
-        this.changeOrderType();
-      }
-    }
-  },
-  created() {
-    this.changeOrderType();
-    this.loadOrderDeliveryTypes();
   }
 };
 </script>
 
 <style>
+/* Classes for non-selected deliveries and payments */
 .options__label:hover .options__hover {
   background-color: rgba(224, 45, 113, 0.2);
 }
 .options__label:hover .options__hover::before {
   border: 4px solid #fff;
 }
+
+/* Classes for selected delivery and payment */
 .options__select {
   background-color: rgba(224, 45, 113, 0.2);
 }

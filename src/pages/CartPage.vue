@@ -20,7 +20,7 @@
         </h1>
         <span class="content__info">
           Кол-во товаров:
-          {{ totalAmount }}
+          {{ totalQuantity }}
         </span>
       </div>
     </div>
@@ -57,18 +57,18 @@
 </template>
 
 <script>
+import CartItem from "@/components/Cart/CartItem";
 import numberFormat from "@/helpers/numberFormat";
 import { mapGetters } from "vuex";
-import CartItem from "@/components/Cart/CartItem";
 
 export default {
-  filters: { numberFormat },
   components: { CartItem },
+  filters: { numberFormat },
   computed: {
     ...mapGetters("cart", {
       products: "cartDetailproducts",
       totalPrice: "cartTotalPrice",
-      totalAmount: "cartTotalAmount"
+      totalQuantity: "cartTotalQuantity"
     })
   }
 };

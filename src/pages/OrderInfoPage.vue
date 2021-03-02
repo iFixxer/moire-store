@@ -95,7 +95,7 @@
 
         <div class="cart__block">
           <ul class="cart__orders" v-if="order">
-            <OrderInfoItem v-for="item in this.order.basket.items" :key="item.id" :item="item" />
+            <OrderItem v-for="item in order.basket.items" :key="item.id" :item="item" />
           </ul>
 
           <div class="cart__total" v-if="order">
@@ -120,28 +120,18 @@
 </template>
 
 <script>
-import OrderInfoItem from "@/components/Order/OrderInfoItem";
+import OrderItem from "@/components/Order/OrderItem";
 import numberFormat from "@/helpers/numberFormat";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
+  components: { OrderItem },
   filters: { numberFormat },
-  components: { OrderInfoItem },
   computed: {
     ...mapGetters("order", {
       order: "orderInfo"
     })
-  },
-  methods: {
-    ...mapActions("order", ["loadOrderInfo"]),
-
-    loadOrder() {
-      this.loadOrderInfo({
-        userAccessKey: this.$store.state.userAccessKey,
-        id: this.$route.params.id
-      });
-    }
   },
   watch: {
     "$route.params.id": {
@@ -153,6 +143,18 @@ export default {
   },
   created() {
     this.loadOrder();
+  },
+  methods: {
+    ...mapActions("order", ["loadOrderInfo"]),
+
+    loadOrder() {
+      this.loadOrderInfo({
+        userAccessKey: this.$store.state.userAccessKey,
+        id: this.$route.params.id
+      }).catch(error => {
+        this.$router.push("/notFound");
+      });
+    }
   }
 };
 </script>

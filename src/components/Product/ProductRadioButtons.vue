@@ -25,14 +25,17 @@
 
 <script>
 export default {
-  props: ["colors", "currentColorId"],
+  props: {
+    colors: Array,
+    currentColor: Object
+  },
   computed: {
     computedColor: {
       get() {
-        return this.currentColorId;
+        return this.currentColor;
       },
       set(color) {
-        this.$emit("update:currentColorId", color);
+        this.$emit("update:currentColor", color);
       }
     }
   }
@@ -40,6 +43,7 @@ export default {
 </script>
 
 <style>
+/* Class for current color */
 .colors__val::before {
   border-color: var(--border-color);
 }

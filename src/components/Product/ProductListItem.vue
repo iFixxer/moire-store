@@ -12,32 +12,34 @@
 
     <span class="catalog__price"> {{ product.price | numberFormat }}₽ </span>
 
-    <ProductRadioButtons :colors="product.colors" :currentColorId.sync="currentColorId">
+    <ProductRadioButtons :colors="product.colors" :currentColor.sync="currentColor">
     </ProductRadioButtons>
   </li>
 </template>
 
 <script>
 import ProductRadioButtons from "@/components/Product/ProductRadioButtons";
-import numberFormat from "@/helpers/numberFormat";
 import noPhoto from "@/assets/img/noPhoto.jpg";
+import numberFormat from "@/helpers/numberFormat";
 
 export default {
+  components: { ProductRadioButtons },
+  filters: {
+    numberFormat
+  },
+  props: {
+    product: Object
+  },
   data() {
     return {
-      currentColorId: this.product.colors[0].color.id,
+      currentColor: this.product.colors[0].color,
       currentImage: this.product.colors[0].gallery
         ? this.product.colors[0].gallery[0].file.url
         : noPhoto
     };
   },
-  components: { ProductRadioButtons },
-  props: ["product"],
-  filters: {
-    numberFormat
-  },
   watch: {
-    currentColorId: {
+    currentColor: {
       handler(value) {
         this.currentImage = value.gallery ? value.gallery[0].file.url : noPhoto;
       }
