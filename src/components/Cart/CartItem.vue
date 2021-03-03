@@ -70,6 +70,13 @@ export default {
       }
     }
   },
+  watch: {
+    quantity: {
+      handler() {
+        if (this.quantity == 0) this.deleteProduct();
+      }
+    }
+  },
   methods: {
     ...mapActions("cart", ["deleteCartProduct"]),
 

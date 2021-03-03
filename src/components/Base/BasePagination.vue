@@ -48,7 +48,7 @@ export default {
   props: {
     page: Number,
     count: Number,
-    perPage: Number
+    perPage: String
   },
   computed: {
     // Get total pages

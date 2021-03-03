@@ -34,7 +34,7 @@
           <div class="pics__wrapper">
             <img :src="currentImage" :alt="currentImage" />
           </div>
-          <ProductGallery :images="images" :currentImage.sync="currentImage" />
+          <ProductGallery :images="product.colors" :currentImage.sync="currentImage" />
         </div>
 
         <div class="item__info">
@@ -76,7 +76,7 @@
                 </fieldset>
               </div>
 
-              <button class="button button--primery" type="submit" :disabled="productAddSending">
+              <button class="button button--primery" type="submit" :disabled="quantity === 0">
                 В корзину
               </button>
 
@@ -181,9 +181,6 @@ export default {
     }),
     sizes() {
       return this.product ? this.product.sizes : [];
-    },
-    images() {
-      return this.product ? this.product.colors : [];
     }
   },
   watch: {
@@ -258,5 +255,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

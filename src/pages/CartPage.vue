@@ -38,7 +38,7 @@
             Мы&nbsp;посчитаем стоимость доставки при&nbsp; переходе к следующему этапу
           </p>
           <p class="cart__price">
-            Итого: <span>{{ totalPrice | numberFormat }} ₽</span>
+            Итого: <span>{{ cartTotalPrice | numberFormat }} ₽</span>
           </p>
 
           <router-link
@@ -67,7 +67,7 @@ export default {
   computed: {
     ...mapGetters("cart", {
       products: "cartDetailproducts",
-      totalPrice: "cartTotalPrice",
+      cartTotalPrice: "cartTotalPrice",
       totalQuantity: "cartTotalQuantity"
     })
   }

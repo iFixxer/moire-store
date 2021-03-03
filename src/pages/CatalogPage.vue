@@ -66,7 +66,7 @@ export default {
       filterSeasonIds: [],
 
       page: 1,
-      productsPerPage: 12
+      productsPerPage: "12"
     };
   },
   computed: {
