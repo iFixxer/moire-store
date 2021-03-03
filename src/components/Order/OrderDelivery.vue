@@ -13,7 +13,7 @@
           class="options__value"
           :class="{
             options__select: computedDeliveryTypeId === delivery.id,
-            options__hover: computedDeliveryTypeId != delivery.id
+            options__hover: computedDeliveryTypeId !== delivery.id,
           }"
         >
           {{ delivery.title }} <b>{{ delivery.price }} ₽</b>
@@ -28,7 +28,7 @@ export default {
   props: {
     deliveryTypes: Array,
     deliveryTypeId: Number,
-    deliveryPrice: String
+    deliveryPrice: String,
   },
   computed: {
     computedDeliveryTypeId: {
@@ -36,10 +36,10 @@ export default {
         return this.deliveryTypeId;
       },
       set(delivery) {
-        this.$emit("update:deliveryTypeId", delivery.id);
-        this.$emit("update:deliveryPrice", delivery.price);
-      }
-    }
-  }
+        this.$emit('update:deliveryTypeId', delivery.id);
+        this.$emit('update:deliveryPrice', delivery.price);
+      },
+    },
+  },
 };
 </script>

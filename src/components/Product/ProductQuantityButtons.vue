@@ -19,7 +19,7 @@
 <script>
 export default {
   props: {
-    quantity: Number
+    quantity: Number,
   },
   computed: {
     computedQuantity: {
@@ -27,26 +27,27 @@ export default {
         return this.quantity;
       },
       set(value) {
-        this.$emit("update:quantity", Number(value));
-      }
-    }
+        this.$emit('update:quantity', Number(value));
+      },
+    },
   },
   methods: {
     oneLess() {
       if (this.computedQuantity > 1) {
-        return --this.computedQuantity;
+        return this.computedQuantity - 1;
       }
+      return this.computedQuantity;
     },
     oneMore() {
-      return ++this.computedQuantity;
-    }
-  }
+      return this.computedQuantity + 1;
+    },
+  },
 };
 </script>
 
 <style>
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

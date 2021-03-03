@@ -57,19 +57,19 @@
 </template>
 
 <script>
-import CartItem from "@/components/Cart/CartItem";
-import numberFormat from "@/helpers/numberFormat";
-import { mapGetters } from "vuex";
+import CartItem from '@/components/Cart/CartItem.vue';
+import numberFormat from '@/helpers/numberFormat';
+import { mapGetters } from 'vuex';
 
 export default {
   components: { CartItem },
   filters: { numberFormat },
   computed: {
-    ...mapGetters("cart", {
-      products: "cartDetailproducts",
-      cartTotalPrice: "cartTotalPrice",
-      totalQuantity: "cartTotalQuantity"
-    })
-  }
+    ...mapGetters('cart', {
+      products: 'cartDetailproducts',
+      cartTotalPrice: 'cartTotalPrice',
+      totalQuantity: 'cartTotalQuantity',
+    }),
+  },
 };
 </script>

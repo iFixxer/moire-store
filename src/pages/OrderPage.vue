@@ -132,13 +132,13 @@
 </template>
 
 <script>
-import BaseFormText from "@/components/Base/BaseFormText";
-import BaseFormTextarea from "@/components/Base/BaseFormTextarea";
-import OrderItem from "@/components/Order/OrderItem";
-import OrderDelivery from "@/components/Order/OrderDelivery";
-import OrderPayment from "@/components/Order/OrderPayment";
-import numberFormat from "@/helpers/numberFormat";
-import { mapGetters, mapActions } from "vuex";
+import BaseFormText from '@/components/Base/BaseFormText.vue';
+import BaseFormTextarea from '@/components/Base/BaseFormTextarea.vue';
+import OrderItem from '@/components/Order/OrderItem.vue';
+import OrderDelivery from '@/components/Order/OrderDelivery.vue';
+import OrderPayment from '@/components/Order/OrderPayment.vue';
+import numberFormat from '@/helpers/numberFormat';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { BaseFormText, BaseFormTextarea, OrderDelivery, OrderPayment, OrderItem },
@@ -146,48 +146,48 @@ export default {
   data() {
     return {
       formData: {
-        name: "",
-        address: "",
-        phone: "",
-        email: "",
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
         deliveryTypeId: 1,
         paymentTypeId: 1,
-        comment: ""
+        comment: '',
       },
-      deliveryPrice: "0"
+      deliveryPrice: '0',
     };
   },
   computed: {
-    ...mapGetters("cart", {
-      products: "cartDetailproducts",
-      totalPrice: "cartTotalPrice"
+    ...mapGetters('cart', {
+      products: 'cartDetailproducts',
+      totalPrice: 'cartTotalPrice',
     }),
-    ...mapGetters("order", {
-      paymentTypes: "paymentTypes",
-      deliveryTypes: "deliveryTypes",
-      orderSendingFailed: "orderSendingFailed",
-      open: "open",
-      orderError: "orderError",
-      orderErrorMessage: "orderErrorMessage"
-    })
+    ...mapGetters('order', {
+      paymentTypes: 'paymentTypes',
+      deliveryTypes: 'deliveryTypes',
+      orderSendingFailed: 'orderSendingFailed',
+      open: 'open',
+      orderError: 'orderError',
+      orderErrorMessage: 'orderErrorMessage',
+    }),
   },
   watch: {
     deliveryPrice: {
       handler() {
         this.changeOrderType();
-      }
-    }
+      },
+    },
   },
   created() {
     this.changeOrderType();
     this.loadOrderDeliveryTypes();
   },
   methods: {
-    ...mapActions("order", [
-      "loadOrderPaymentTypes",
-      "loadOrderDeliveryTypes",
-      "loadOrderData",
-      "closeModal"
+    ...mapActions('order', [
+      'loadOrderPaymentTypes',
+      'loadOrderDeliveryTypes',
+      'loadOrderData',
+      'closeModal',
     ]),
 
     order() {
@@ -199,14 +199,14 @@ export default {
         email: this.formData.email,
         deliveryTypeId: this.formData.deliveryTypeId,
         paymentTypeId: this.formData.paymentTypeId,
-        comment: this.formData.comment
+        comment: this.formData.comment,
       });
       NProgress.done();
     },
     changeOrderType() {
       this.loadOrderPaymentTypes({ deliveryTypeId: this.formData.deliveryTypeId });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -81,20 +81,20 @@
 </template>
 
 <script>
-import ProductFilterRadioButtons from "@/components/Product/ProductFilterRadioButtons";
-import ProductFilterCheckboxMaterials from "@/components/Product/ProductFilterCheckboxMaterials";
-import ProductFilterCheckboxSeasons from "@/components/Product/ProductFilterCheckboxSeasons";
-import numberFormat from "@/helpers/numberFormat";
-import { mapGetters, mapActions } from "vuex";
+import ProductFilterRadioButtons from '@/components/Product/ProductFilterRadioButtons.vue';
+import ProductFilterCheckboxMaterials from '@/components/Product/ProductFilterCheckboxMaterials.vue';
+import ProductFilterCheckboxSeasons from '@/components/Product/ProductFilterCheckboxSeasons.vue';
+import numberFormat from '@/helpers/numberFormat';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: {
     ProductFilterRadioButtons,
     ProductFilterCheckboxMaterials,
-    ProductFilterCheckboxSeasons
+    ProductFilterCheckboxSeasons,
   },
   filters: {
-    numberFormat
+    numberFormat,
   },
   props: {
     priceFrom: Number,
@@ -102,7 +102,7 @@ export default {
     categoryId: Number,
     colorIds: Array,
     materialIds: Array,
-    materialIds: Array
+    seasonIds: Array,
   },
   data() {
     return {
@@ -114,16 +114,16 @@ export default {
       selectSeasonIds: [],
 
       resetActivated: false,
-      submitDisabled: true
+      submitDisabled: true,
     };
   },
   computed: {
-    ...mapGetters("products", {
-      categories: "categoriesData",
-      colors: "colorsData",
-      materials: "materialsData",
-      seasons: "seasonsData"
-    })
+    ...mapGetters('products', {
+      categories: 'categoriesData',
+      colors: 'colorsData',
+      materials: 'materialsData',
+      seasons: 'seasonsData',
+    }),
   },
   watch: {
     priceFrom(value) {
@@ -145,21 +145,21 @@ export default {
       this.selectSeasonIds = value;
     },
     currentPriceFrom(value) {
-      if (value != 0) {
+      if (value !== 0) {
         this.resetActivated = true;
       } else {
         this.resetActivated = false;
       }
     },
     currentPriceTo(value) {
-      if (value != 0) {
+      if (value !== 0) {
         this.resetActivated = true;
       } else {
         this.resetActivated = false;
       }
     },
     currentCategoryId(value) {
-      if (value != 0) {
+      if (value !== 0) {
         this.resetActivated = true;
       } else {
         this.resetActivated = false;
@@ -185,64 +185,66 @@ export default {
       } else {
         this.resetActivated = false;
       }
-    }
+    },
   },
-  created() {
-    this.loadCategoriesData();
-    this.loadColorsData();
-    this.loadMaterialsData();
-    this.loadSeasonsData();
-  },
+  // created() {
+  //   this.loadCategoriesData();
+  //   this.loadColorsData();
+  //   this.loadMaterialsData();
+  //   this.loadSeasonsData();
+  // },
   methods: {
-    ...mapActions("products", [
-      "loadCategoriesData",
-      "loadColorsData",
-      "loadMaterialsData",
-      "loadSeasonsData"
+    ...mapActions('products', [
+      'loadCategoriesData',
+      'loadColorsData',
+      'loadMaterialsData',
+      'loadSeasonsData',
     ]),
 
     submit() {
       if (this.currentPriceFrom != null) {
-        this.$emit("update:priceFrom", this.currentPriceFrom);
+        this.$emit('update:priceFrom', this.currentPriceFrom);
       }
       if (this.currentPriceTo != null) {
-        this.$emit("update:priceTo", this.currentPriceTo);
+        this.$emit('update:priceTo', this.currentPriceTo);
       }
       if (this.currentCategoryId != null) {
-        this.$emit("update:categoryId", this.currentCategoryId);
+        this.$emit('update:categoryId', this.currentCategoryId);
       }
-      this.$emit("update:colorIds", this.selectColorIds);
-      this.$emit("update:materialIds", this.selectMaterialIds);
-      this.$emit("update:seasonIds", this.selectSeasonIds);
+      this.$emit('update:colorIds', this.selectColorIds);
+      this.$emit('update:materialIds', this.selectMaterialIds);
+      this.$emit('update:seasonIds', this.selectSeasonIds);
     },
     reset() {
-      if (this.currentPriceFrom != 0) {
-        this.$emit("update:priceFrom", 0);
+      if (this.currentPriceFrom !== 0) {
+        this.$emit('update:priceFrom', 0);
       }
-      if (this.currentPriceTo != 0) {
-        this.$emit("update:priceTo", 0);
+      if (this.currentPriceTo !== 0) {
+        this.$emit('update:priceTo', 0);
       }
-      if (this.currentCategoryId != 0) {
-        this.$emit("update:categoryId", 0);
+      if (this.currentCategoryId !== 0) {
+        this.$emit('update:categoryId', 0);
       }
       if (this.selectColorIds.length > 0) {
-        this.$emit("update:colorIds", (this.selectColorIds = []));
+        this.$emit('update:colorIds', (this.selectColorIds = []));
       }
       if (this.selectMaterialIds.length > 0) {
-        this.$emit("update:materialIds", (this.selectMaterialIds = []));
+        this.$emit('update:materialIds', (this.selectMaterialIds = []));
       }
       if (this.selectSeasonIds.length > 0) {
-        this.$emit("update:seasonIds", (this.selectSeasonIds = []));
+        this.$emit('update:seasonIds', (this.selectSeasonIds = []));
       }
     },
     clearMinPrice() {
-      if (document.getElementById("min-price").value == 0)
-        document.getElementById("min-price").value = "";
+      if (document.getElementById('min-price').value === 0) {
+        document.getElementById('min-price').value = '';
+      }
     },
     clearMaxPrice() {
-      if (document.getElementById("max-price").value == 0)
-        document.getElementById("max-price").value = "";
-    }
-  }
+      if (document.getElementById('max-price').value === 0) {
+        document.getElementById('max-price').value = '';
+      }
+    },
+  },
 };
 </script>

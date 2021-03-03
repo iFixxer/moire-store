@@ -24,7 +24,7 @@
 export default {
   props: {
     seasons: Array,
-    selectSeasonIds: Array
+    selectSeasonIds: Array,
   },
   computed: {
     computedSeasons: {
@@ -32,9 +32,9 @@ export default {
         return this.selectSeasonIds;
       },
       set(value) {
-        this.$emit("update:selectSeasonIds", value);
-      }
-    }
-  }
+        this.$emit('update:selectSeasonIds', value);
+      },
+    },
+  },
 };
 </script>

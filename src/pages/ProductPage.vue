@@ -144,17 +144,17 @@
 </template>
 
 <script>
-import ProductRadioButtons from "@/components/Product/ProductRadioButtons";
-import ProductQuantityButtons from "@/components/Product/ProductQuantityButtons";
-import ProductGallery from "@/components/Product/ProductGallery";
-import noPhoto from "@/assets/img/noPhoto.jpg";
-import numberFormat from "@/helpers/numberFormat";
-import { mapGetters, mapActions } from "vuex";
+import ProductRadioButtons from '@/components/Product/ProductRadioButtons.vue';
+import ProductQuantityButtons from '@/components/Product/ProductQuantityButtons.vue';
+import ProductGallery from '@/components/Product/ProductGallery.vue';
+import noPhoto from '@/assets/img/noPhoto.jpg';
+import numberFormat from '@/helpers/numberFormat';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { ProductRadioButtons, ProductQuantityButtons, ProductGallery },
   filters: {
-    numberFormat
+    numberFormat,
   },
   data() {
     return {
@@ -163,34 +163,34 @@ export default {
       currentImage: null,
       quantity: 1,
 
-      incorrectSize: false
+      incorrectSize: false,
     };
   },
   computed: {
-    ...mapGetters("products", {
-      product: "productData",
-      productLoadingFailed: "productLoadingFailed"
+    ...mapGetters('products', {
+      product: 'productData',
+      productLoadingFailed: 'productLoadingFailed',
     }),
-    ...mapGetters("cart", {
-      productAddSending: "productAddSending",
-      cartAddingFailed: "cartAddingFailed",
-      productAdded: "productAdded",
-      open: "open",
-      cartError: "cartError",
-      cartErrorMessage: "cartErrorMessage"
+    ...mapGetters('cart', {
+      productAddSending: 'productAddSending',
+      cartAddingFailed: 'cartAddingFailed',
+      productAdded: 'productAdded',
+      open: 'open',
+      cartError: 'cartError',
+      cartErrorMessage: 'cartErrorMessage',
     }),
     sizes() {
       return this.product ? this.product.sizes : [];
-    }
+    },
   },
   watch: {
-    "$route.params.id": {
+    '$route.params.id': {
       handler() {
         this.loadProductData({ id: this.$route.params.id }).catch(error => {
-          this.$router.push("/notFound");
+          this.$router.push('/notFound');
         });
       },
-      immediate: true
+      immediate: true,
     },
     currentSizeId: {
       handler() {
@@ -199,7 +199,7 @@ export default {
         } else {
           this.incorrectSize = true;
         }
-      }
+      },
     },
     product: {
       handler() {
@@ -207,36 +207,36 @@ export default {
         this.currentImage = this.product.colors[0].gallery
           ? this.product.colors[0].gallery[0].file.url
           : noPhoto;
-      }
+      },
     },
     currentColor: {
       handler(value) {
-        if (typeof value.color != "undefined") this.currentColor = value.color;
-        if (typeof value.gallery != "undefined") {
+        if (typeof value.color != 'undefined') this.currentColor = value.color;
+        if (typeof value.gallery != 'undefined') {
           if (value.gallery != null) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;
           }
         }
-      }
+      },
     },
     currentImage: {
       handler(value) {
-        if (typeof value.gallery != "undefined") {
+        if (typeof value.gallery != 'undefined') {
           if (value.gallery != null) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;
           }
         }
-        if (typeof value.color != "undefined") this.currentColor = value.color;
-      }
-    }
+        if (typeof value.color != 'undefined') this.currentColor = value.color;
+      },
+    },
   },
   methods: {
-    ...mapActions("products", ["loadProductData"]),
-    ...mapActions("cart", ["addProductToCart", "closeModal", "openModal"]),
+    ...mapActions('products', ['loadProductData']),
+    ...mapActions('cart', ['addProductToCart', 'closeModal', 'openModal']),
 
     addToCart() {
       if (this.currentSizeId > 0) {
@@ -245,13 +245,13 @@ export default {
           productId: this.product.id,
           colorId: this.currentColor,
           sizeId: this.currentSizeId,
-          quantity: this.quantity
+          quantity: this.quantity,
         });
       } else {
         this.incorrectSize = true;
         this.openModal();
       }
-    }
-  }
+    },
+  },
 };
 </script>

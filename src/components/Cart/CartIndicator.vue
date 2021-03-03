@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
   computed: {
     ...mapState({
-      totalCartProducts: state => state.cart.cartProducts.length
-    })
-  }
+      totalCartProducts: (state) => state.cart.cartProducts.length,
+    }),
+  },
 };
 </script>

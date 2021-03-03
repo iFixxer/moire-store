@@ -13,15 +13,15 @@
 </template>
 
 <script>
-import formFieldMixin from "@/mixins/formFieldMixin";
+import formFieldMixin from '@/mixins/formFieldMixin';
 
 export default {
   props: {
     type: String,
     id: String,
     maxlength: String,
-    mask: String
+    mask: String,
   },
-  mixins: [formFieldMixin]
+  mixins: [formFieldMixin],
 };
 </script>

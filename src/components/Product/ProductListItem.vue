@@ -18,32 +18,32 @@
 </template>
 
 <script>
-import ProductRadioButtons from "@/components/Product/ProductRadioButtons";
-import noPhoto from "@/assets/img/noPhoto.jpg";
-import numberFormat from "@/helpers/numberFormat";
+import ProductRadioButtons from '@/components/Product/ProductRadioButtons.vue';
+import noPhoto from '@/assets/img/noPhoto.jpg';
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   components: { ProductRadioButtons },
   filters: {
-    numberFormat
+    numberFormat,
   },
   props: {
-    product: Object
+    product: Object,
   },
   data() {
     return {
       currentColor: this.product.colors[0].color,
       currentImage: this.product.colors[0].gallery
         ? this.product.colors[0].gallery[0].file.url
-        : noPhoto
+        : noPhoto,
     };
   },
   watch: {
     currentColor: {
       handler(value) {
         this.currentImage = value.gallery ? value.gallery[0].file.url : noPhoto;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

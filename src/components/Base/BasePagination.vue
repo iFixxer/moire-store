@@ -42,26 +42,26 @@
 <script>
 export default {
   model: {
-    prop: "page",
-    event: "paginate"
+    prop: 'page',
+    event: 'paginate',
   },
   props: {
     page: Number,
     count: Number,
-    perPage: String
+    perPage: String,
   },
   computed: {
     // Get total pages
     pages() {
       return Math.ceil(this.count / this.perPage);
-    }
+    },
   },
   methods: {
     paginate(page) {
       if (page > 0 && page <= this.pages) {
-        this.$emit("paginate", page);
+        this.$emit('paginate', page);
       }
-    }
-  }
+    },
+  },
 };
 </script>

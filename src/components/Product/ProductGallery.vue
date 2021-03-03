@@ -9,7 +9,7 @@
           :alt="image.gallery ? image.gallery[0].file.url : noPhoto"
           :class="{
             'pics__link pics__link--current':
-              currentImage === (image.gallery ? image.gallery[0].file.url : noPhoto)
+              currentImage === (image.gallery ? image.gallery[0].file.url : noPhoto),
           }"
         />
       </a>
@@ -18,23 +18,23 @@
 </template>
 
 <script>
-import noPhoto from "@/assets/img/noPhoto.jpg";
+import noPhoto from '@/assets/img/noPhoto.jpg';
 
 export default {
   props: {
     images: Array,
-    currentImage: String
+    currentImage: String,
   },
   data() {
     return {
-      noPhoto: noPhoto
+      noPhoto,
     };
   },
   methods: {
     selectImage(value) {
-      this.$emit("update:currentImage", value);
-    }
-  }
+      this.$emit('update:currentImage', value);
+    },
+  },
 };
 </script>
 

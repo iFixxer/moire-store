@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_BASE_URL } from "@/config";
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 const state = () => ({
   userAccessKey: null,
@@ -13,14 +13,14 @@ const state = () => ({
 
   open: false,
   cartError: {},
-  cartErrorMessage: ""
+  cartErrorMessage: '',
 });
 
 const getters = {
   cartDetailproducts(state) {
     return state.cartProducts.map(item => {
       return {
-        ...item
+        ...item,
       };
     });
   },
@@ -33,84 +33,84 @@ const getters = {
   cartTotalQuantity(state, getters) {
     return getters.cartDetailproducts.reduce((acc, item) => item.quantity + acc, 0);
   },
-  productAddSending(state) {
+  productAddSending() {
     return state.productAddSending;
   },
-  cartAddingFailed(state) {
+  cartAddingFailed() {
     return state.cartAddingFailed;
   },
-  productAdded(state) {
+  productAdded() {
     return state.productAdded;
   },
-  open(state) {
+  open() {
     return state.open;
   },
-  cartError(state) {
+  cartError() {
     return state.cartError;
   },
-  cartErrorMessage(state) {
+  cartErrorMessage() {
     return state.cartErrorMessage;
-  }
+  },
 };
 
 const actions = {
   loadCart(context) {
     return axios
-      .get(API_BASE_URL + "/api/baskets", {
+      .get(API_BASE_URL + '/api/baskets', {
         params: {
-          userAccessKey: context.state.userAccessKey
-        }
+          userAccessKey: context.state.userAccessKey,
+        },
       })
       .then(response => {
         if (!context.state.userAccessKey) {
-          localStorage.setItem("userAccessKey", response.data.user.accessKey);
-          context.commit("updateUserAccessKey", response.data.user.accessKey);
+          localStorage.setItem('userAccessKey', response.data.user.accessKey);
+          context.commit('updateUserAccessKey', response.data.user.accessKey);
         }
 
-        context.commit("updateCartProductsData", response.data.items);
-        context.commit("syncCartProducts");
+        context.commit('updateCartProductsData', response.data.items);
+        context.commit('syncCartProducts');
       });
   },
   addProductToCart(context, { productId, colorId, sizeId, quantity }) {
-    context.commit("updateCartAddingFailed", false);
-    context.commit("updateProductAdded", false);
-    context.commit("updateProductAddSending", true);
+    context.commit('updateCartAddingFailed', false);
+    context.commit('updateProductAdded', false);
+    context.commit('updateProductAddSending', true);
     return axios
       .post(
-        API_BASE_URL + "/api/baskets/products",
+        API_BASE_URL + '/api/baskets/products',
         {
           productId: productId,
           colorId: colorId.id,
           sizeId: sizeId,
-          quantity: quantity
+          quantity: quantity,
         },
         {
           params: {
-            userAccessKey: context.state.userAccessKey
-          }
+            userAccessKey: context.state.userAccessKey,
+          },
         }
       )
       .then(response => {
-        context.commit("updateCartProductsData", response.data.items);
-        context.commit("syncCartProducts");
-        context.commit("updateProductAdded", true);
-        context.commit("updateProductAddSending", false);
-        context.commit("updateOpen", true);
+        context.commit('updateCartProductsData', response.data.items);
+        context.commit('syncCartProducts');
+        context.commit('updateProductAdded', true);
+        context.commit('updateProductAddSending', false);
+        context.commit('updateOpen', true);
       })
       .catch(error => {
-        context.commit("updateProductAddSending", false);
-        context.commit("updateCartAddingFailed", true);
-        context.commit("updateOpen", true);
-        context.commit("updateCartError", error.response.data.error.request);
+        context.commit('updateProductAddSending', false);
+        context.commit('updateCartAddingFailed', true);
+        context.commit('updateOpen', true);
+        context.commit('updateCartError', error.response.data.error.request);
         if (error.response.data.error.message.lenght > 1) {
-          context.commit("updateCartErrorMessage", error.response.data.error.message);
+          context.commit('updateCartErrorMessage', error.response.data.error.message);
         } else {
-          context.commit("updateCartErrorMessage", error.response.data.error.request.sizeId);
+          context.commit('updateCartErrorMessage', error.response.data.error.request.sizeId);
         }
       });
   },
   updateCartProductQuantity(context, { basketItemId, quantity }) {
-    context.commit("updateCartProductQuantity", { basketItemId, quantity });
+    context.commit('updateCartProductQuantity', { basketItemId, quantity });
 
     if (quantity < 1) {
       return;
@@ -118,47 +118,47 @@ const actions = {
 
     return axios
       .put(
-        API_BASE_URL + "/api/baskets/products",
+        API_BASE_URL + '/api/baskets/products',
         {
           basketItemId: basketItemId,
-          quantity: quantity
+          quantity: quantity,
         },
         {
           params: {
-            userAccessKey: context.state.userAccessKey
-          }
+            userAccessKey: context.state.userAccessKey,
+          },
         }
       )
       .then(response => {
-        context.commit("updateCartProductsData", response.data.items);
+        context.commit('updateCartProductsData', response.data.items);
       })
       .catch(() => {
-        context.commit("syncCartProducts");
+        context.commit('syncCartProducts');
       });
   },
   deleteCartProduct(context, { basketItemId }) {
     return axios
-      .delete(API_BASE_URL + "/api/baskets/products", {
+      .delete(API_BASE_URL + '/api/baskets/products', {
         data: {
-          basketItemId: basketItemId
+          basketItemId: basketItemId,
         },
         params: {
-          userAccessKey: context.state.userAccessKey
-        }
+          userAccessKey: context.state.userAccessKey,
+        },
       })
       .then(response => {
-        context.commit("updateCartProductsData", response.data.items);
-        context.commit("syncCartProducts");
+        context.commit('updateCartProductsData', response.data.items);
+        context.commit('syncCartProducts');
       });
   },
   openModal(context) {
-    context.commit("updateOpen", true);
+    context.commit('updateOpen', true);
   },
   closeModal(context) {
-    context.commit("updateOpen", false);
-    context.commit("updateProductAdded", false);
-    context.commit("updateProductAddSending", false);
-  }
+    context.commit('updateOpen', false);
+    context.commit('updateProductAdded', false);
+    context.commit('updateProductAddSending', false);
+  },
 };
 
 const mutations = {
@@ -182,7 +182,7 @@ const mutations = {
         product: item.product,
         quantity: item.quantity,
         color: item.color,
-        size: item.size
+        size: item.size,
       };
     });
   },
@@ -207,7 +207,7 @@ const mutations = {
   },
   updateCartErrorMessage(state, cartErrorMessage) {
     state.cartErrorMessage = cartErrorMessage;
-  }
+  },
 };
 
 export default {
@@ -215,5 +215,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

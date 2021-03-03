@@ -13,7 +13,7 @@
           class="options__value"
           :class="{
             options__select: paymentTypeId === payment.id,
-            options__hover: paymentTypeId != payment.id
+            options__hover: paymentTypeId !== payment.id,
           }"
         >
           {{ payment.title }}
@@ -27,17 +27,17 @@
 export default {
   props: {
     paymentTypes: Array,
-    paymentTypeId: Number
+    paymentTypeId: Number,
   },
   computed: {
     computedPaymentTypeId: {
       get() {
-        return this.$emit("update:paymentTypeId", this.paymentTypes[0].id);
+        return this.$emit('update:paymentTypeId', this.paymentTypes[0].id);
       },
       set(payment) {
-        this.$emit("update:paymentTypeId", payment.id);
-      }
-    }
-  }
+        this.$emit('update:paymentTypeId', payment.id);
+      },
+    },
+  },
 };
 </script>

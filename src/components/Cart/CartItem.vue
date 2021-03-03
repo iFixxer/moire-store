@@ -41,20 +41,20 @@
 </template>
 
 <script>
-import ProductQuantityButtons from "@/components/Product/ProductQuantityButtons";
-import noPhoto from "@/assets/img/noPhoto.jpg";
-import numberFormat from "@/helpers/numberFormat";
-import { mapActions } from "vuex";
+import ProductQuantityButtons from '@/components/Product/ProductQuantityButtons.vue';
+import noPhoto from '@/assets/img/noPhoto.jpg';
+import numberFormat from '@/helpers/numberFormat';
+import { mapActions } from 'vuex';
 
 export default {
   components: { ProductQuantityButtons },
   filters: { numberFormat },
   props: {
-    item: Object
+    item: Object,
   },
   data() {
     return {
-      noPhoto: noPhoto
+      noPhoto,
     };
   },
   computed: {
@@ -63,26 +63,26 @@ export default {
         return this.item.quantity;
       },
       set(value) {
-        this.$store.dispatch("cart/updateCartProductQuantity", {
+        this.$store.dispatch('cart/updateCartProductQuantity', {
           basketItemId: this.item.basketItemId,
-          quantity: value
+          quantity: value,
         });
-      }
-    }
+      },
+    },
   },
   watch: {
     quantity: {
       handler() {
-        if (this.quantity == 0) this.deleteProduct();
-      }
-    }
+        if (this.quantity === 0) this.deleteProduct();
+      },
+    },
   },
   methods: {
-    ...mapActions("cart", ["deleteCartProduct"]),
+    ...mapActions('cart', ['deleteCartProduct']),
 
     deleteProduct() {
       this.deleteCartProduct({ basketItemId: this.item.basketItemId });
-    }
-  }
+    },
+  },
 };
 </script>

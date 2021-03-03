@@ -13,7 +13,7 @@
           v-if="color.color != null"
           class="colors__val"
           :class="{
-            colors__select: computedColor === color.color
+            colors__select: computedColor === color.color,
           }"
           :style="{ 'background-color': color.color.code }"
         >
@@ -27,7 +27,7 @@
 export default {
   props: {
     colors: Array,
-    currentColor: Object
+    currentColor: Object,
   },
   computed: {
     computedColor: {
@@ -35,10 +35,10 @@ export default {
         return this.currentColor;
       },
       set(color) {
-        this.$emit("update:currentColor", color);
-      }
-    }
-  }
+        this.$emit('update:currentColor', color);
+      },
+    },
+  },
 };
 </script>
 
@@ -56,7 +56,7 @@ export default {
   height: 20px;
 }
 .colors__val::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;

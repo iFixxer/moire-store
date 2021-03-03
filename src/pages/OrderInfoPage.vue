@@ -120,40 +120,40 @@
 </template>
 
 <script>
-import OrderItem from "@/components/Order/OrderItem";
-import numberFormat from "@/helpers/numberFormat";
-import { mapGetters, mapActions } from "vuex";
+import OrderItem from '@/components/Order/OrderItem.vue';
+import numberFormat from '@/helpers/numberFormat';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { OrderItem },
   filters: { numberFormat },
   computed: {
-    ...mapGetters("order", {
-      order: "orderInfo"
-    })
+    ...mapGetters('order', {
+      order: 'orderInfo',
+    }),
   },
   watch: {
-    "$route.params.id": {
+    '$route.params.id': {
       handler() {
         this.loadOrder();
-      }
+      },
     },
-    immediate: true
+    immediate: true,
   },
   created() {
     this.loadOrder();
   },
   methods: {
-    ...mapActions("order", ["loadOrderInfo"]),
+    ...mapActions('order', ['loadOrderInfo']),
 
     loadOrder() {
       this.loadOrderInfo({
         userAccessKey: this.$store.state.userAccessKey,
-        id: this.$route.params.id
+        id: this.$route.params.id,
       }).catch(error => {
-        this.$router.push("/notFound");
+        this.$router.push('/notFound');
       });
-    }
-  }
+    },
+  },
 };
 </script>

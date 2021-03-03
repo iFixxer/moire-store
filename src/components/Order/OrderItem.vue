@@ -15,19 +15,20 @@
 </template>
 
 <script>
-import numberFormat from "@/helpers/numberFormat";
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   filters: { numberFormat },
   props: {
-    item: Object
+    item: Object,
   },
   computed: {
     quantity() {
       if (this.item.quantity > 1) {
-        return "(" + this.item.quantity + " шт.)";
+        return `( ${this.item.quantity} шт.)`;
       }
-    }
-  }
+      return 0;
+    },
+  },
 };
 </script>

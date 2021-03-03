@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import ProductList from "@/components/Product/ProductList";
-import BasePagination from "@/components/Base/BasePagination";
-import ProductFilter from "@/components/Product/ProductFilter";
-import { mapGetters, mapActions } from "vuex";
+import ProductList from '@/components/Product/ProductList.vue';
+import BasePagination from '@/components/Base/BasePagination.vue';
+import ProductFilter from '@/components/Product/ProductFilter.vue';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { ProductList, BasePagination, ProductFilter },
@@ -66,50 +66,51 @@ export default {
       filterSeasonIds: [],
 
       page: 1,
-      productsPerPage: "12"
+      productsPerPage: '12',
     };
   },
   computed: {
-    ...mapGetters("products", {
-      productsData: "productsData",
-      productLoadingFailed: "productLoadingFailed",
-      open: "open",
-      productError: "productError",
-      productErrorMessage: "productErrorMessage"
+    ...mapGetters('products', {
+      productsData: 'productsData',
+      productLoadingFailed: 'productLoadingFailed',
+      open: 'open',
+      productError: 'productError',
+      productErrorMessage: 'productErrorMessage',
     }),
 
     products() {
       return this.productsData
         ? this.productsData.items.filter((product, index, items) => {
-            if (items.indexOf(product) == index)
-              return {
-                ...product
-              };
-          })
+          if (items.indexOf(product) === index) {
+            return {
+              ...product,
+            };
+          }
+          return null;
+        })
         : [];
     },
     countProducts() {
       return this.productsData ? this.productsData.pagination.total : 0;
-    }
+    },
   },
   watch: {
-    page: "loadProducts",
-    productsPerPage: "loadProducts",
-    filterCategoryId: "loadProducts",
-    filterPriceFrom: "loadProducts",
-    filterPriceTo: "loadProducts",
-    filterColorIds: "loadProducts",
-    filterMaterialIds: "loadProducts",
-    filterSeasonIds: "loadProducts"
+    page: 'loadProducts',
+    productsPerPage: 'loadProducts',
+    filterCategoryId: 'loadProducts',
+    filterPriceFrom: 'loadProducts',
+    filterPriceTo: 'loadProducts',
+    filterColorIds: 'loadProducts',
+    filterMaterialIds: 'loadProducts',
+    filterSeasonIds: 'loadProducts',
   },
   created() {
     this.loadProducts();
   },
   methods: {
-    ...mapActions("products", ["loadProductsData", "closeModal", "openModal"]),
+    ...mapActions('products', ['loadProductsData', 'closeModal', 'openModal']),
 
     loadProducts() {
-      NProgress.start();
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         this.loadProductsData({
@@ -120,10 +121,10 @@ export default {
           categoryId: this.filterCategoryId,
           colorIds: this.filterColorIds,
           materialIds: this.filterMaterialIds,
-          seasonIds: this.filterSeasonIds
-        }).then(() => NProgress.done());
+          seasonIds: this.filterSeasonIds,
+        });
       }, 300);
-    }
-  }
+    },
+  },
 };
 </script>

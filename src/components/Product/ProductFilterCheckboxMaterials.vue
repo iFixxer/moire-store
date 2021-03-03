@@ -24,7 +24,7 @@
 export default {
   props: {
     materials: Array,
-    selectMaterialIds: Array
+    selectMaterialIds: Array,
   },
   computed: {
     computedMaterials: {
@@ -32,9 +32,9 @@ export default {
         return this.selectMaterialIds;
       },
       set(value) {
-        this.$emit("update:selectMaterialIds", value);
-      }
-    }
-  }
+        this.$emit('update:selectMaterialIds', value);
+      },
+    },
+  },
 };
 </script>

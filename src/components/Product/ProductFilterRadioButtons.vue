@@ -19,7 +19,7 @@
 export default {
   props: {
     colors: Array,
-    selectColorIds: Array
+    selectColorIds: Array,
   },
   computed: {
     computedColors: {
@@ -27,9 +27,9 @@ export default {
         return this.selectColorIds;
       },
       set(value) {
-        this.$emit("update:selectColorIds", value);
-      }
-    }
-  }
+        this.$emit('update:selectColorIds', value);
+      },
+    },
+  },
 };
 </script>

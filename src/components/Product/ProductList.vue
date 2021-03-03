@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import ProductListItem from "@/components/Product/ProductListItem";
+import ProductListItem from '@/components/Product/ProductListItem.vue';
 
 export default {
   components: { ProductListItem },
   props: {
-    products: Array
-  }
+    products: Array,
+  },
 };
 </script>

@@ -1,11 +1,11 @@
-import BaseFormField from "@/components/Base/BaseFormField.vue";
+import BaseFormField from '@/components/Base/BaseFormField.vue';
 
 export default {
   props: {
     title: String,
     error: String,
     placeholder: String,
-    value: String
+    value: String,
   },
   components: { BaseFormField },
   computed: {
@@ -14,8 +14,8 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("input", value);
-      }
-    }
-  }
+        this.$emit('input', value);
+      },
+    },
+  },
 };

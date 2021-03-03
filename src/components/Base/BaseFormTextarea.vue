@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import formFieldMixin from "@/mixins/formFieldMixin";
+import formFieldMixin from '@/mixins/formFieldMixin';
 
 export default {
-  mixins: [formFieldMixin]
+  mixins: [formFieldMixin],
 };
 </script>
