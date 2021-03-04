@@ -186,7 +186,7 @@ export default {
   watch: {
     '$route.params.id': {
       handler() {
-        this.loadProductData({ id: this.$route.params.id }).catch(error => {
+        this.loadProductData({ id: this.$route.params.id }).catch(() => {
           this.$router.push('/notFound');
         });
       },
@@ -211,8 +211,8 @@ export default {
     },
     currentColor: {
       handler(value) {
-        if (typeof value.color != 'undefined') this.currentColor = value.color;
-        if (typeof value.gallery != 'undefined') {
+        if (typeof value.color !== 'undefined') this.currentColor = value.color;
+        if (typeof value.gallery !== 'undefined') {
           if (value.gallery != null) {
             this.currentImage = value.gallery[0].file.url;
           } else {
@@ -223,14 +223,14 @@ export default {
     },
     currentImage: {
       handler(value) {
-        if (typeof value.gallery != 'undefined') {
+        if (typeof value.gallery !== 'undefined') {
           if (value.gallery != null) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;
           }
         }
-        if (typeof value.color != 'undefined') this.currentColor = value.color;
+        if (typeof value.color !== 'undefined') this.currentColor = value.color;
       },
     },
   },

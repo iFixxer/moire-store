@@ -150,7 +150,7 @@ export default {
       this.loadOrderInfo({
         userAccessKey: this.$store.state.userAccessKey,
         id: this.$route.params.id,
-      }).catch(error => {
+      }).catch(() => {
         this.$router.push('/notFound');
       });
     },

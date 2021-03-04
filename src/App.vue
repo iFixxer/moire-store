@@ -20,7 +20,6 @@ export default {
     if (userAccessKey) {
       this.updateUserAccessKey(userAccessKey);
     }
-
     this.loadCart();
   },
   methods: {

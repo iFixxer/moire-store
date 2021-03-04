@@ -19,10 +19,15 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-eslint": "^4.5.11",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^6.2.2",
     "less": "^4.1.1",
     "less-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.11"
@@ -34,7 +39,8 @@
     },
     "rules": {
       "import/prefer-default-export": 0,
-      "no-shadow": 0
+      "no-shadow": 0,
+      "no-unused-vars": 0
     },
     "extends": [
       "plugin:vue/essential",
