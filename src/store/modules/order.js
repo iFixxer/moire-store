@@ -68,7 +68,6 @@ const actions = {
         router.push({ name: 'orderInfo', params: { id: response.data.id } });
       })
       .catch((error) => {
-        console.log(error);
         context.commit('updateOrderSendingFailed', true);
         if (error.response.status === 500) {
           context.commit('updateOrderError', error.response.data.error);
