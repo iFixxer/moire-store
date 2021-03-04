@@ -12,43 +12,43 @@ const state = () => ({
   productAdded: false,
 
   open: false,
+  cartErrors: false,
   cartError: {},
   cartErrorMessage: '',
 });
 
 const getters = {
   cartDetailproducts(state) {
-    return state.cartProducts.map(item => {
-      return {
-        ...item,
-      };
-    });
+    return state.cartProducts.map((item) => item.item);
   },
   cartTotalPrice(state, getters) {
     return getters.cartDetailproducts.reduce(
       (acc, item) => item.product.price * item.quantity + acc,
-      0
+      0,
     );
   },
   cartTotalQuantity(state, getters) {
     return getters.cartDetailproducts.reduce((acc, item) => item.quantity + acc, 0);
   },
-  productAddSending() {
+  productAddSending(state) {
     return state.productAddSending;
   },
-  cartAddingFailed() {
+  cartAddingFailed(state) {
     return state.cartAddingFailed;
   },
-  productAdded() {
+  productAdded(state) {
     return state.productAdded;
   },
-  open() {
+  open(state) {
     return state.open;
   },
-  cartError() {
+  cartErrors(state) {
+    return state.cartErrors;
+  },
+  cartError(state) {
     return state.cartError;
   },
-  cartErrorMessage() {
+  cartErrorMessage(state) {
     return state.cartErrorMessage;
   },
 };
@@ -56,12 +56,12 @@ const getters = {
 const actions = {
   loadCart(context) {
     return axios
-      .get(API_BASE_URL + '/api/baskets', {
+      .get(`${API_BASE_URL}/api/baskets`, {
         params: {
           userAccessKey: context.state.userAccessKey,
         },
       })
-      .then(response => {
+      .then((response) => {
         if (!context.state.userAccessKey) {
           localStorage.setItem('userAccessKey', response.data.user.accessKey);
           context.commit('updateUserAccessKey', response.data.user.accessKey);
@@ -71,82 +71,88 @@ const actions = {
         context.commit('syncCartProducts');
       });
   },
-  addProductToCart(context, { productId, colorId, sizeId, quantity }) {
+  addProductToCart(context, {
+    productId, colorId, sizeId, quantity,
+  }) {
     context.commit('updateCartAddingFailed', false);
     context.commit('updateProductAdded', false);
     context.commit('updateProductAddSending', true);
     return axios
-      .post(
-        API_BASE_URL + '/api/baskets/products',
+      .post(`${API_BASE_URL}/api/baskets/products`,
         {
-          productId: productId,
+          productId,
           colorId: colorId.id,
-          sizeId: sizeId,
-          quantity: quantity,
+          sizeId,
+          quantity,
         },
         {
           params: {
             userAccessKey: context.state.userAccessKey,
           },
-        }
-      )
-      .then(response => {
+        })
+      .then((response) => {
         context.commit('updateCartProductsData', response.data.items);
         context.commit('syncCartProducts');
         context.commit('updateProductAdded', true);
         context.commit('updateProductAddSending', false);
         context.commit('updateOpen', true);
       })
-      .catch(error => {
+      .catch((error) => {
         context.commit('updateProductAddSending', false);
         context.commit('updateCartAddingFailed', true);
         context.commit('updateOpen', true);
-        context.commit('updateCartError', error.response.data.error.request);
-        if (error.response.data.error.message.lenght > 1) {
+        context.commit('updateCartError', error.response.data.error);
+        if (error.response.status === 500) {
           context.commit('updateCartErrorMessage', error.response.data.error.message);
-        } else {
+        }
+        if (error.response.status === 400) {
           context.commit('updateCartErrorMessage', error.response.data.error.request.sizeId);
         }
       });
   },
   updateCartProductQuantity(context, { basketItemId, quantity }) {
+    context.commit('updateCartErrors', false);
     context.commit('updateCartProductQuantity', { basketItemId, quantity });
 
     if (quantity < 1) {
-      return;
+      return 1;
     }
 
     return axios
-      .put(
-        API_BASE_URL + '/api/baskets/products',
+      .put(`${API_BASE_URL}/api/baskets/products`,
         {
-          basketItemId: basketItemId,
-          quantity: quantity,
+          basketItemId,
+          quantity,
         },
         {
           params: {
             userAccessKey: context.state.userAccessKey,
           },
-        }
-      )
-      .then(response => {
+        })
+      .then((response) => {
         context.commit('updateCartProductsData', response.data.items);
-      })
-      .catch(() => {
         context.commit('syncCartProducts');
+      })
+      .catch((error) => {
+        context.commit('updateCartErrors', true);
+        context.commit('updateCartError', error.response.data.error);
+        if (error.response.status === 500) {
+          context.commit('updateCartErrorMessage', error.response.data.error.message);
+        }
+        context.commit('updateOpen', true);
       });
   },
   deleteCartProduct(context, { basketItemId }) {
     return axios
-      .delete(API_BASE_URL + '/api/baskets/products', {
+      .delete(`${API_BASE_URL}/api/baskets/products`, {
         data: {
-          basketItemId: basketItemId,
+          basketItemId,
         },
         params: {
           userAccessKey: context.state.userAccessKey,
         },
       })
-      .then(response => {
+      .then((response) => {
         context.commit('updateCartProductsData', response.data.items);
         context.commit('syncCartProducts');
       });
@@ -169,22 +175,22 @@ const mutations = {
     state.cartProductsData = items;
   },
   updateCartProductQuantity(state, { basketItemId, quantity }) {
-    const item = state.cartProducts.find(item => item.basketItemId === basketItemId);
+    const item = state.cartProducts.find((item) => item.basketItemId === basketItemId);
 
     if (item) {
       item.quantity = quantity;
     }
   },
   syncCartProducts(state) {
-    state.cartProducts = state.cartProductsData.map(item => {
-      return {
+    state.cartProducts = state.cartProductsData.map((item) => ({
+      item: {
         basketItemId: item.id,
         product: item.product,
         quantity: item.quantity,
         color: item.color,
         size: item.size,
-      };
-    });
+      },
+    }));
   },
   resetCart(state) {
     state.cartProducts = [];
@@ -201,6 +207,9 @@ const mutations = {
   },
   updateOpen(state, open) {
     state.open = open;
+  },
+  updateCartErrors(state, cartErrors) {
+    state.cartErrors = cartErrors;
   },
   updateCartError(state, cartError) {
     state.cartError = cartError;

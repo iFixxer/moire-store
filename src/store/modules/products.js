@@ -58,7 +58,7 @@ const actions = {
     },
   ) {
     return axios
-      .get(API_BASE_URL`/api/products`, {
+      .get(`${API_BASE_URL}/api/products`, {
         params: {
           page,
           limit,
@@ -71,7 +71,7 @@ const actions = {
         },
       })
       .then((response) => {
-        context.dispatch('updateProductsData', response.data);
+        context.commit('updateProductsData', response.data);
       })
       .catch((error) => {
         context.commit('updateProductLoadingFailed', true);
@@ -83,29 +83,29 @@ const actions = {
       });
   },
   loadCategoriesData(context) {
-    return axios.get(API_BASE_URL`/api/productCategories`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/productCategories`).then((response) => {
       context.commit('updateCategoriesData', response.data.items);
     });
   },
   loadColorsData(context) {
-    return axios.get(API_BASE_URL`/api/colors`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/colors`).then((response) => {
       context.commit('updateColorsData', response.data.items);
     });
   },
   loadMaterialsData(context) {
-    return axios.get(API_BASE_URL`/api/materials`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/materials`).then((response) => {
       context.commit('updateMaterialsData', response.data.items);
     });
   },
   loadSeasonsData(context) {
-    return axios.get(API_BASE_URL`/api/seasons`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/seasons`).then((response) => {
       context.commit('updateSeasonsData', response.data.items);
     });
   },
   loadProductData(context, { id }) {
     context.commit('updateProductLoadingFailed', false);
     return axios
-      .get(API_BASE_URL`/api/products/` + id)
+      .get(`${API_BASE_URL}/api/products/${id}`)
       .then((response) => {
         context.commit('updateProductData', response.data);
       })

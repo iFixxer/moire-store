@@ -1,4 +1,3 @@
-import store from '@/store';
 import router from '@/router';
 import axios from 'axios';
 import { API_BASE_URL } from '@/config';
@@ -18,62 +17,64 @@ const state = () => ({
 });
 
 const getters = {
-  orderInfo() {
+  orderInfo(state) {
     return state.orderInfo;
   },
-  deliveryTypes() {
+  deliveryTypes(state) {
     return state.orderDeliveryTypes;
   },
-  paymentTypes() {
+  paymentTypes(state) {
     return state.orderPaymentTypes;
   },
-  orderSendingFailed() {
+  orderSendingFailed(state) {
     return state.orderSendingFailed;
   },
-  open() {
+  open(state) {
     return state.open;
   },
-  orderError() {
+  orderError(state) {
     return state.orderError;
   },
-  orderErrorMessage() {
+  orderErrorMessage(state) {
     return state.orderErrorMessage;
   },
 };
 
 const actions = {
-  loadOrderData(context, { name, address, phone, email, deliveryTypeId, paymentTypeId, comment }) {
+  loadOrderData(context, {
+    name, address, phone, email, deliveryTypeId, paymentTypeId, comment,
+  }) {
     context.commit('updateOrderSendingFailed', false);
     context.commit('updateOpen', false);
     return axios
-      .post(
-        API_BASE_URL + '/api/orders',
+      .post(`${API_BASE_URL}/api/orders`,
         {
-          name: name,
-          address: address,
-          phone: phone,
-          email: email,
-          deliveryTypeId: deliveryTypeId,
-          paymentTypeId: paymentTypeId,
-          comment: comment,
+          name,
+          address,
+          phone,
+          email,
+          deliveryTypeId,
+          paymentTypeId,
+          comment,
         },
         {
           params: {
             userAccessKey: localStorage.getItem('userAccessKey'),
           },
-        }
-      )
-      .then(response => {
+        })
+      .then((response) => {
         if (response.data) context.commit('updateOrderData', response.data);
-        store.commit('cart/resetCart', response.data);
+        this.commit('cart/resetCart', response.data);
         router.push({ name: 'orderInfo', params: { id: response.data.id } });
       })
-      .catch(error => {
+      .catch((error) => {
+        console.log(error);
         context.commit('updateOrderSendingFailed', true);
-        context.commit('updateOrderError', error.response.data.error.request);
-        if (error.response.data.error.message.lenght > 1) {
+        if (error.response.status === 500) {
+          context.commit('updateOrderError', error.response.data.error);
           context.commit('updateOrderErrorMessage', error.response.data.error.message);
         } else {
+          context.commit('updateOrderError', error.response.data.error.request);
           context.commit('updateOrderErrorMessage', 'Проверьте правильность заполнения полей');
         }
         context.commit('updateOpen', true);
@@ -81,33 +82,33 @@ const actions = {
   },
   loadOrderInfo(context, { id }) {
     return axios
-      .get(API_BASE_URL + `/api/orders/` + id, {
+      .get(`${API_BASE_URL}/api/orders/${id}`, {
         params: {
           userAccessKey: localStorage.getItem('userAccessKey'),
         },
       })
-      .then(response => {
+      .then((response) => {
         context.commit('updateOrderInfo', response.data);
       })
-      .catch(error => {
-        if (error.response.status == 400) {
+      .catch((error) => {
+        if (error.response.status === 400) {
           throw error;
         }
       });
   },
   loadOrderPaymentTypes(context, { deliveryTypeId }) {
     return axios
-      .get(API_BASE_URL + '/api/payments', {
+      .get(`${API_BASE_URL}/api/payments`, {
         params: {
-          deliveryTypeId: deliveryTypeId,
+          deliveryTypeId,
         },
       })
-      .then(response => {
+      .then((response) => {
         context.commit('updateOrderPaymentTypes', response.data);
       });
   },
   loadOrderDeliveryTypes(context) {
-    return axios.get(API_BASE_URL + '/api/deliveries').then(response => {
+    return axios.get(`${API_BASE_URL}/api/deliveries`).then((response) => {
       context.commit('updateOrderDeliveryTypes', response.data);
     });
   },

@@ -187,12 +187,12 @@ export default {
       }
     },
   },
-  // created() {
-  //   this.loadCategoriesData();
-  //   this.loadColorsData();
-  //   this.loadMaterialsData();
-  //   this.loadSeasonsData();
-  // },
+  created() {
+    this.loadCategoriesData();
+    this.loadColorsData();
+    this.loadMaterialsData();
+    this.loadSeasonsData();
+  },
   methods: {
     ...mapActions('products', [
       'loadCategoriesData',
@@ -200,7 +200,6 @@ export default {
       'loadMaterialsData',
       'loadSeasonsData',
     ]),
-
     submit() {
       if (this.currentPriceFrom != null) {
         this.$emit('update:priceFrom', this.currentPriceFrom);

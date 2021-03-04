@@ -141,8 +141,12 @@ import numberFormat from '@/helpers/numberFormat';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  components: { BaseFormText, BaseFormTextarea, OrderDelivery, OrderPayment, OrderItem },
-  filters: { numberFormat },
+  components: {
+    BaseFormText, BaseFormTextarea, OrderDelivery, OrderPayment, OrderItem,
+  },
+  filters: {
+    numberFormat,
+  },
   data() {
     return {
       formData: {
@@ -191,7 +195,7 @@ export default {
     ]),
 
     order() {
-      NProgress.start();
+      // NProgress.start();
       this.loadOrderData({
         name: this.formData.name,
         address: this.formData.address,
@@ -201,7 +205,7 @@ export default {
         paymentTypeId: this.formData.paymentTypeId,
         comment: this.formData.comment,
       });
-      NProgress.done();
+      // NProgress.done();
     },
     changeOrderType() {
       this.loadOrderPaymentTypes({ deliveryTypeId: this.formData.deliveryTypeId });

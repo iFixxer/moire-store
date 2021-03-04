@@ -34,12 +34,14 @@ export default {
   methods: {
     oneLess() {
       if (this.computedQuantity > 1) {
-        return this.computedQuantity - 1;
+        this.computedQuantity -= 1;
+        return this.computedQuantity;
       }
       return this.computedQuantity;
     },
     oneMore() {
-      return this.computedQuantity + 1;
+      this.computedQuantity += 1;
+      return this.computedQuantity;
     },
   },
 };
