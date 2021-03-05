@@ -3,8 +3,7 @@
     <li class="pics__item" v-for="image in images" :key="image.name">
       <a href="#" @click.prevent="selectImage(image)">
         <img
-          width="98"
-          height="98"
+          class="pics__gallery"
           :src="image.gallery ? image.gallery[0].file.url : noPhoto"
           :alt="image.gallery ? image.gallery[0].file.url : noPhoto"
           :class="{

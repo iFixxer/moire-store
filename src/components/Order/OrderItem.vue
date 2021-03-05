@@ -27,7 +27,7 @@ export default {
       if (this.item.quantity > 1) {
         return `( ${this.item.quantity} шт.)`;
       }
-      return 0;
+      return null;
     },
   },
 };

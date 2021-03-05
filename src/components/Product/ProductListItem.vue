@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      currentColor: this.product.colors[0].color,
+      currentColor: null,
       currentImage: this.product.colors[0].gallery
         ? this.product.colors[0].gallery[0].file.url
         : noPhoto,
@@ -41,7 +41,14 @@ export default {
   watch: {
     currentColor: {
       handler(value) {
-        this.currentImage = value.gallery ? value.gallery[0].file.url : noPhoto;
+        if (typeof value.color !== 'undefined') this.currentColor = value.color;
+        if (typeof value.gallery !== 'undefined') {
+          if (value.gallery != null) {
+            this.currentImage = value.gallery[0].file.url;
+          } else {
+            this.currentImage = noPhoto;
+          }
+        }
       },
     },
   },

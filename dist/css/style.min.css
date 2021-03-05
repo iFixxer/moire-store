@@ -1,13 +1,6 @@
 @charset "UTF-8";
 @font-face {
   font-display: swap;
-  font-weight: 300;
-  font-family: "Geometria";
-  font-style: normal;
-  src: url(../fonts/Geometria-light.woff2) format("woff2");
-}
-@font-face {
-  font-display: swap;
   font-weight: 400;
   font-family: "Geometria";
   font-style: normal;
@@ -602,6 +595,10 @@ a {
 .pics__wrapper {
   margin-bottom: 20px;
 }
+.pics__wrapper img{
+  width: 216px;
+  height: 304px;
+}
 .pics__list {
   margin: 0;
   padding: 0;
@@ -609,6 +606,10 @@ a {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 20px;
+}
+.pics__gallery {
+  width: 98px;
+  height: 98px;
 }
 .pics__link {
   border-bottom: 3px solid transparent;
