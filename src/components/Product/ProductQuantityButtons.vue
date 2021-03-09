@@ -1,6 +1,6 @@
 <template>
   <div class="form__counter">
-    <button type="button" aria-label="Убрать один товар" @click.prevent="oneLess">
+    <button type="button" aria-label="Убрать один товар" @click.prevent="computedQuantity--">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-minus"></use>
       </svg>
@@ -8,7 +8,7 @@
 
     <input type="number" v-model="computedQuantity" />
 
-    <button type="button" aria-label="Добавить один товар" @click.prevent="oneMore">
+    <button type="button" aria-label="Добавить один товар" @click.prevent="computedQuantity++">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-plus"></use>
       </svg>
@@ -29,19 +29,6 @@ export default {
       set(value) {
         this.$emit('update:quantity', Number(value));
       },
-    },
-  },
-  methods: {
-    oneLess() {
-      if (this.computedQuantity > 1) {
-        this.computedQuantity -= 1;
-        return this.computedQuantity;
-      }
-      return this.computedQuantity;
-    },
-    oneMore() {
-      this.computedQuantity += 1;
-      return this.computedQuantity;
     },
   },
 };

@@ -52,13 +52,11 @@
           </router-link>
         </div>
         <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
-          <div class="cart__error form__error-block">
-            <center>
+          <div class="cart__error form__error-block" style="text-align:center;">
               <h4>Ошибка!</h4>
               <p v-if="cartErrors">
                 {{ cartErrorMessage }}
               </p>
-            </center>
           </div>
         </vue-modaltor>
       </form>
@@ -69,20 +67,23 @@
 <script>
 import CartItem from '@/components/Cart/CartItem.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { CartItem },
   filters: { numberFormat },
   computed: {
+    ...mapState('cart', [
+      'open',
+      'cartErrors',
+      'cartError',
+      'cartErrorMessage',
+    ]),
+
     ...mapGetters('cart', {
       products: 'cartDetailproducts',
       cartTotalPrice: 'cartTotalPrice',
       totalQuantity: 'cartTotalQuantity',
-      open: 'open',
-      cartErrors: 'cartErrors',
-      cartError: 'cartError',
-      cartErrorMessage: 'cartErrorMessage',
     }),
   },
   methods: {

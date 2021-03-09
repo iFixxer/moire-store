@@ -117,13 +117,11 @@
           </button>
         </div>
         <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
-          <div class="cart__error form__error-block">
-            <center>
-              <h4>Ошибка при отправке заказа!</h4>
-              <p v-if="orderSendingFailed">
-                {{ orderErrorMessage }}
-              </p>
-            </center>
+          <div class="cart__error form__error-block" style="text-align:center;">
+            <h4>Ошибка при отправке заказа!</h4>
+            <p v-if="orderSendingFailed">
+              {{ orderErrorMessage }}
+            </p>
           </div>
         </vue-modaltor>
       </form>
@@ -138,7 +136,7 @@ import OrderItem from '@/components/Order/OrderItem.vue';
 import OrderDelivery from '@/components/Order/OrderDelivery.vue';
 import OrderPayment from '@/components/Order/OrderPayment.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   components: {
@@ -166,14 +164,14 @@ export default {
       products: 'cartDetailproducts',
       totalPrice: 'cartTotalPrice',
     }),
-    ...mapGetters('order', {
-      paymentTypes: 'paymentTypes',
-      deliveryTypes: 'deliveryTypes',
-      orderSendingFailed: 'orderSendingFailed',
-      open: 'open',
-      orderError: 'orderError',
-      orderErrorMessage: 'orderErrorMessage',
-    }),
+    ...mapState('order', [
+      'paymentTypes',
+      'deliveryTypes',
+      'orderSendingFailed',
+      'open',
+      'orderError',
+      'orderErrorMessage',
+    ]),
   },
   watch: {
     deliveryPrice: {
@@ -184,18 +182,17 @@ export default {
   },
   created() {
     this.changeOrderType();
-    this.loadOrderDeliveryTypes();
+    this.loadDeliveryTypes();
   },
   methods: {
     ...mapActions('order', [
-      'loadOrderPaymentTypes',
-      'loadOrderDeliveryTypes',
+      'loadPaymentTypes',
+      'loadDeliveryTypes',
       'loadOrderData',
       'closeModal',
     ]),
 
     order() {
-      // NProgress.start();
       this.loadOrderData({
         name: this.formData.name,
         address: this.formData.address,
@@ -205,10 +202,9 @@ export default {
         paymentTypeId: this.formData.paymentTypeId,
         comment: this.formData.comment,
       });
-      // NProgress.done();
     },
     changeOrderType() {
-      this.loadOrderPaymentTypes({ deliveryTypeId: this.formData.deliveryTypeId });
+      this.loadPaymentTypes({ deliveryTypeId: this.formData.deliveryTypeId });
     },
   },
 };

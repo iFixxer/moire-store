@@ -3,50 +3,34 @@ import { API_BASE_URL } from '@/config';
 
 const state = () => ({
   productsData: null,
+  product: null,
 
-  productData: null,
   productLoadingFailed: false,
-
   open: false,
   productError: {},
   productErrorMessage: '',
 
-  categoriesData: null,
-  colorsData: null,
-  materialsData: null,
-  seasonsData: null,
+  categories: null,
+  colors: null,
+  materials: null,
+  seasons: null,
 });
 
 const getters = {
-  productsData(state) {
-    return state.productsData;
+  products(state) {
+    return state.productsData
+      ? state.productsData.items.filter((product, index, items) => {
+        if (items.indexOf(product) === index) {
+          return {
+            ...product,
+          };
+        }
+        return null;
+      })
+      : [];
   },
-  categoriesData(state) {
-    return state.categoriesData;
-  },
-  colorsData(state) {
-    return state.colorsData;
-  },
-  materialsData(state) {
-    return state.materialsData;
-  },
-  seasonsData(state) {
-    return state.seasonsData;
-  },
-  productData(state) {
-    return state.productData;
-  },
-  open(state) {
-    return state.open;
-  },
-  productLoadingFailed(state) {
-    return state.productLoadingFailed;
-  },
-  productError(state) {
-    return state.productError;
-  },
-  productErrorMessage(state) {
-    return state.productErrorMessage;
+  countProducts(state) {
+    return state.productsData ? state.productsData.pagination.total : 0;
   },
 };
 
@@ -82,32 +66,32 @@ const actions = {
         context.commit('updateOpen', true);
       });
   },
-  loadCategoriesData(context) {
+  loadCategories(context) {
     return axios.get(`${API_BASE_URL}/api/productCategories`).then((response) => {
-      context.commit('updateCategoriesData', response.data.items);
+      context.commit('updateCategories', response.data.items);
     });
   },
-  loadColorsData(context) {
+  loadColors(context) {
     return axios.get(`${API_BASE_URL}/api/colors`).then((response) => {
-      context.commit('updateColorsData', response.data.items);
+      context.commit('updateColors', response.data.items);
     });
   },
-  loadMaterialsData(context) {
+  loadMaterials(context) {
     return axios.get(`${API_BASE_URL}/api/materials`).then((response) => {
-      context.commit('updateMaterialsData', response.data.items);
+      context.commit('updateMaterials', response.data.items);
     });
   },
-  loadSeasonsData(context) {
+  loadSeasons(context) {
     return axios.get(`${API_BASE_URL}/api/seasons`).then((response) => {
-      context.commit('updateSeasonsData', response.data.items);
+      context.commit('updateSeasons', response.data.items);
     });
   },
-  loadProductData(context, { id }) {
+  loadProduct(context, { id }) {
     context.commit('updateProductLoadingFailed', false);
     return axios
       .get(`${API_BASE_URL}/api/products/${id}`)
       .then((response) => {
-        context.commit('updateProductData', response.data);
+        context.commit('updateProduct', response.data);
       })
       .catch((error) => {
         context.commit('updateProductLoadingFailed', true);
@@ -130,20 +114,20 @@ const mutations = {
   updateProductsData(state, productsData) {
     state.productsData = productsData;
   },
-  updateCategoriesData(state, categoriesData) {
-    state.categoriesData = categoriesData;
+  updateCategories(state, categories) {
+    state.categories = categories;
   },
-  updateColorsData(state, colorsData) {
-    state.colorsData = colorsData;
+  updateColors(state, colors) {
+    state.colors = colors;
   },
-  updateMaterialsData(state, materialsData) {
-    state.materialsData = materialsData;
+  updateMaterials(state, materials) {
+    state.materials = materials;
   },
-  updateSeasonsData(state, seasonsData) {
-    state.seasonsData = seasonsData;
+  updateSeasons(state, seasons) {
+    state.seasons = seasons;
   },
-  updateProductData(state, productData) {
-    state.productData = productData;
+  updateProduct(state, product) {
+    state.product = product;
   },
   updateProductLoadingFailed(state, productLoadingFailed) {
     state.productLoadingFailed = productLoadingFailed;

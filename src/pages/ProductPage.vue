@@ -1,11 +1,11 @@
 <template>
   <div>
     <main class="content container" v-if="!product">
-      <center>
+      <div style="text-align:center;">
         <h2>
           Не удалось загрузить товар.
         </h2>
-      </center>
+      </div>
     </main>
     <main class="content container" v-else>
       <div class="content__top">
@@ -81,24 +81,22 @@
               </button>
 
               <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
-                <div class="cart__error form__error-block">
-                  <center>
-                    <h4 v-if="incorrectSize">
-                      Выберите размер
-                    </h4>
-                    <h4 v-if="productAddSending">
-                      Товар добавляется в корзину...
-                    </h4>
-                    <h4 v-if="productAdded">
-                      Товар добавлен в корзину
-                    </h4>
-                    <h4 v-if="cartAddingFailed">
-                      Ошибка!
-                    </h4>
-                    <p v-if="cartAddingFailed">
-                      {{ cartErrorMessage }}
-                    </p>
-                  </center>
+                <div class="cart__error form__error-block" style="text-align:center;">
+                  <h4 v-if="incorrectSize">
+                    Выберите размер
+                  </h4>
+                  <h4 v-if="productAddSending">
+                    Товар добавляется в корзину...
+                  </h4>
+                  <h4 v-if="productAdded">
+                    Товар добавлен в корзину
+                  </h4>
+                  <h4 v-if="cartAddingFailed">
+                    Ошибка!
+                  </h4>
+                  <p v-if="cartAddingFailed">
+                    {{ cartErrorMessage }}
+                  </p>
                 </div>
               </vue-modaltor>
             </form>
@@ -149,7 +147,7 @@ import ProductQuantityButtons from '@/components/Product/ProductQuantityButtons.
 import ProductGallery from '@/components/Product/ProductGallery.vue';
 import noPhoto from '@/assets/img/noPhoto.jpg';
 import numberFormat from '@/helpers/numberFormat';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   components: { ProductRadioButtons, ProductQuantityButtons, ProductGallery },
@@ -167,18 +165,18 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('products', {
-      product: 'productData',
-      productLoadingFailed: 'productLoadingFailed',
-    }),
-    ...mapGetters('cart', {
-      productAddSending: 'productAddSending',
-      cartAddingFailed: 'cartAddingFailed',
-      productAdded: 'productAdded',
-      open: 'open',
-      cartError: 'cartError',
-      cartErrorMessage: 'cartErrorMessage',
-    }),
+    ...mapState('products', [
+      'product',
+      'productLoadingFailed',
+    ]),
+    ...mapState('cart', [
+      'productAddSending',
+      'cartAddingFailed',
+      'productAdded',
+      'open',
+      'cartError',
+      'cartErrorMessage',
+    ]),
     sizes() {
       return this.product ? this.product.sizes : [];
     },
@@ -186,19 +184,15 @@ export default {
   watch: {
     '$route.params.id': {
       handler() {
-        this.loadProductData({ id: this.$route.params.id }).catch(() => {
-          this.$router.push('/notFound');
+        this.loadProduct({ id: this.$route.params.id }).catch(() => {
+          this.$router.replace('/notFound');
         });
       },
       immediate: true,
     },
     currentSizeId: {
       handler() {
-        if (this.currentSizeId > 0) {
-          this.incorrectSize = false;
-        } else {
-          this.incorrectSize = true;
-        }
+        return this.currentSizeId <= 0;
       },
     },
     product: {
@@ -211,9 +205,9 @@ export default {
     },
     currentColor: {
       handler(value) {
-        if (typeof value.color !== 'undefined') this.currentColor = value.color;
+        if (value.color) this.currentColor = value.color;
         if (typeof value.gallery !== 'undefined') {
-          if (value.gallery != null) {
+          if (value.gallery) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;
@@ -224,23 +218,27 @@ export default {
     currentImage: {
       handler(value) {
         if (typeof value.gallery !== 'undefined') {
-          if (value.gallery != null) {
+          if (value.gallery) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;
           }
         }
-        if (typeof value.color !== 'undefined') this.currentColor = value.color;
+        if (value.color) this.currentColor = value.color;
       },
     },
   },
   methods: {
-    ...mapActions('products', ['loadProductData']),
-    ...mapActions('cart', ['addProductToCart', 'closeModal', 'openModal']),
+    ...mapActions('products', ['loadProduct']),
+    ...mapActions('cart', [
+      'addProductToCart',
+      'closeModal',
+      'openModal',
+    ]),
 
     addToCart() {
+      this.incorrectSize = false;
       if (this.currentSizeId > 0) {
-        this.openModal();
         this.addProductToCart({
           productId: this.product.id,
           colorId: this.currentColor,
@@ -249,8 +247,8 @@ export default {
         });
       } else {
         this.incorrectSize = true;
-        this.openModal();
       }
+      this.openModal();
     },
   },
 };

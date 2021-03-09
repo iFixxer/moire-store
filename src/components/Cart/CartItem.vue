@@ -2,7 +2,7 @@
   <li class="cart__item product">
     <div class="product__pic">
       <img
-        :src="item.color.gallery ? item.color.gallery[0].file.url : noPhoto"
+        :src="computedSrc"
         width="120"
         height="120"
         :alt="item.product.title"
@@ -69,11 +69,9 @@ export default {
         });
       },
     },
-  },
-  watch: {
-    quantity: {
-      handler() {
-        if (this.quantity === 0) this.deleteProduct();
+    computedSrc: {
+      get() {
+        return this.item.color.gallery ? this.item.color.gallery[0].file.url : noPhoto;
       },
     },
   },

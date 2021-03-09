@@ -34,13 +34,11 @@
         <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage" />
 
         <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
-          <div class="cart__error form__error-block">
-            <center>
-              <h4 v-if="productLoadingFailed">Ошибка при загрузке!</h4>
-              <p v-if="productErrorMessage">
-                {{ productErrorMessage }}
-              </p>
-            </center>
+          <div class="cart__error form__error-block" style="text-align:center;">
+            <h4 v-if="productLoadingFailed">Ошибка при загрузке!</h4>
+            <p v-if="productErrorMessage">
+              {{ productErrorMessage }}
+            </p>
           </div>
         </vue-modaltor>
       </section>
@@ -52,7 +50,7 @@
 import ProductList from '@/components/Product/ProductList.vue';
 import BasePagination from '@/components/Base/BasePagination.vue';
 import ProductFilter from '@/components/Product/ProductFilter.vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   components: { ProductList, BasePagination, ProductFilter },
@@ -70,29 +68,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('products', {
-      productsData: 'productsData',
-      productLoadingFailed: 'productLoadingFailed',
-      open: 'open',
-      productError: 'productError',
-      productErrorMessage: 'productErrorMessage',
-    }),
+    ...mapState('products', [
+      'productLoadingFailed',
+      'open',
+      'productError',
+      'productErrorMessage',
+    ]),
 
-    products() {
-      return this.productsData
-        ? this.productsData.items.filter((product, index, items) => {
-          if (items.indexOf(product) === index) {
-            return {
-              ...product,
-            };
-          }
-          return null;
-        })
-        : [];
-    },
-    countProducts() {
-      return this.productsData ? this.productsData.pagination.total : 0;
-    },
+    ...mapGetters('products', [
+      'products',
+      'countProducts',
+    ]),
   },
   watch: {
     page: 'loadProducts',
@@ -108,7 +94,11 @@ export default {
     this.loadProducts();
   },
   methods: {
-    ...mapActions('products', ['loadProductsData', 'closeModal', 'openModal']),
+    ...mapActions('products', [
+      'loadProductsData',
+      'closeModal',
+      'openModal',
+    ]),
 
     loadProducts() {
       clearTimeout(this.loadProductsTimer);

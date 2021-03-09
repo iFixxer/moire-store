@@ -9,8 +9,8 @@
             type="text"
             name="min-price"
             v-model.number="currentPriceFrom"
-            @click.prevent="clearMinPrice"
-            id="min-price"
+            @focus="focusPriceFrom"
+            @blur="blurPriceFrom"
           />
           <span class="form__value">От</span>
         </label>
@@ -20,8 +20,8 @@
             type="text"
             name="max-price"
             v-model.number="currentPriceTo"
-            @click.prevent="clearMaxPrice"
-            id="max-price"
+            @focus="focusPriceTo"
+            @blur="blurPriceTo"
           />
           <span class="form__value">До</span>
         </label>
@@ -69,7 +69,7 @@
         Применить
       </button>
       <button
-        v-if="resetActivated"
+        v-if="showResetBtn"
         class="filter__reset button button--second"
         type="button"
         @click.prevent="reset"
@@ -85,7 +85,7 @@ import ProductFilterRadioButtons from '@/components/Product/ProductFilterRadioBu
 import ProductFilterCheckboxMaterials from '@/components/Product/ProductFilterCheckboxMaterials.vue';
 import ProductFilterCheckboxSeasons from '@/components/Product/ProductFilterCheckboxSeasons.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {
@@ -113,17 +113,40 @@ export default {
       selectMaterialIds: [],
       selectSeasonIds: [],
 
-      resetActivated: false,
+      focused: false,
+
       submitDisabled: true,
     };
   },
   computed: {
-    ...mapGetters('products', {
-      categories: 'categoriesData',
-      colors: 'colorsData',
-      materials: 'materialsData',
-      seasons: 'seasonsData',
-    }),
+    ...mapState('products', [
+      'categories',
+      'colors',
+      'materials',
+      'seasons',
+    ]),
+
+    filters() {
+      return {
+        currentPriceFrom: this.currentPriceFrom,
+        currentPriceTo: this.currentPriceTo,
+        currentCategoryId: this.currentCategoryId,
+        selectColorIds: this.selectColorIds,
+        selectMaterialIds: this.selectMaterialIds,
+        selectSeasonIds: this.selectSeasonIds,
+      };
+    },
+    showResetBtn() {
+      const initial = {
+        currentPriceFrom: 0,
+        currentPriceTo: 0,
+        currentCategoryId: 0,
+        selectColorIds: [],
+        selectMaterialIds: [],
+        selectSeasonIds: [],
+      };
+      return JSON.stringify(initial) !== JSON.stringify(this.filters);
+    },
   },
   watch: {
     priceFrom(value) {
@@ -144,70 +167,28 @@ export default {
     seasonIds(value) {
       this.selectSeasonIds = value;
     },
-    currentPriceFrom(value) {
-      if (value !== 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
-    currentPriceTo(value) {
-      if (value !== 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
-    currentCategoryId(value) {
-      if (value !== 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
-    selectColorIds(value) {
-      if (value.length > 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
-    selectMaterialIds(value) {
-      if (value.length > 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
-    selectSeasonIds(value) {
-      if (value.length > 0) {
-        this.resetActivated = true;
-      } else {
-        this.resetActivated = false;
-      }
-    },
   },
   created() {
-    this.loadCategoriesData();
-    this.loadColorsData();
-    this.loadMaterialsData();
-    this.loadSeasonsData();
+    this.loadCategories();
+    this.loadColors();
+    this.loadMaterials();
+    this.loadSeasons();
   },
   methods: {
     ...mapActions('products', [
-      'loadCategoriesData',
-      'loadColorsData',
-      'loadMaterialsData',
-      'loadSeasonsData',
+      'loadCategories',
+      'loadColors',
+      'loadMaterials',
+      'loadSeasons',
     ]),
     submit() {
-      if (this.currentPriceFrom != null) {
+      if (this.currentPriceFrom !== null) {
         this.$emit('update:priceFrom', this.currentPriceFrom);
       }
-      if (this.currentPriceTo != null) {
+      if (this.currentPriceTo !== null) {
         this.$emit('update:priceTo', this.currentPriceTo);
       }
-      if (this.currentCategoryId != null) {
+      if (this.currentCategoryId !== null) {
         this.$emit('update:categoryId', this.currentCategoryId);
       }
       this.$emit('update:colorIds', this.selectColorIds);
@@ -216,13 +197,13 @@ export default {
     },
     reset() {
       if (this.currentPriceFrom !== 0) {
-        this.$emit('update:priceFrom', 0);
+        this.$emit('update:priceFrom', (this.currentPriceFrom = 0));
       }
       if (this.currentPriceTo !== 0) {
-        this.$emit('update:priceTo', 0);
+        this.$emit('update:priceTo', (this.currentPriceTo = 0));
       }
       if (this.currentCategoryId !== 0) {
-        this.$emit('update:categoryId', 0);
+        this.$emit('update:categoryId', (this.currentCategoryId = 0));
       }
       if (this.selectColorIds.length > 0) {
         this.$emit('update:colorIds', (this.selectColorIds = []));
@@ -234,15 +215,21 @@ export default {
         this.$emit('update:seasonIds', (this.selectSeasonIds = []));
       }
     },
-    clearMinPrice() {
-      if (document.getElementById('min-price').value === 0) {
-        document.getElementById('min-price').value = '';
-      }
+    focusPriceFrom() {
+      this.focused = true;
+      if (this.currentPriceFrom === 0) this.currentPriceFrom = '';
     },
-    clearMaxPrice() {
-      if (document.getElementById('max-price').value === 0) {
-        document.getElementById('max-price').value = '';
-      }
+    blurPriceFrom() {
+      this.focused = false;
+      if (this.currentPriceFrom === '') this.currentPriceFrom = 0;
+    },
+    focusPriceTo() {
+      this.focused = true;
+      if (this.currentPriceTo === 0) this.currentPriceTo = '';
+    },
+    blurPriceTo() {
+      this.focused = false;
+      if (this.currentPriceTo === '') this.currentPriceTo = 0;
     },
   },
 };

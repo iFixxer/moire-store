@@ -1,7 +1,7 @@
 <template>
-  <center>
+  <div style="text-align:center;">
     <h1>Страница не найдена!</h1>
-  </center>
+  </div>
 </template>
 
 <script>

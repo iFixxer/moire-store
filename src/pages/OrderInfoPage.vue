@@ -19,7 +19,7 @@
         </li>
       </ul>
 
-      <h1 class="content__title" v-if="order">
+      <h1 class="content__title" v-if="orderInfo">
         Заказ оформлен <span>№{{ this.$route.params.id }}</span>
       </h1>
     </div>
@@ -33,13 +33,13 @@
             уточнения деталей доставки.
           </p>
 
-          <ul class="dictionary" v-if="order">
+          <ul class="dictionary" v-if="orderInfo">
             <li class="dictionary__item">
               <span class="dictionary__key">
                 Статус заказа
               </span>
               <span class="dictionary__value">
-                {{ this.order.status.title }}
+                {{ orderInfo.status.title }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -47,7 +47,7 @@
                 Получатель
               </span>
               <span class="dictionary__value">
-                {{ this.order.name }}
+                {{ orderInfo.name }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -55,7 +55,7 @@
                 Адрес доставки
               </span>
               <span class="dictionary__value">
-                {{ this.order.address }}
+                {{ orderInfo.address }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -63,7 +63,7 @@
                 Телефон
               </span>
               <span class="dictionary__value">
-                {{ this.order.phone }}
+                {{ orderInfo.phone }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -71,7 +71,7 @@
                 Email
               </span>
               <span class="dictionary__value">
-                {{ this.order.email }}
+                {{ orderInfo.email }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -79,7 +79,7 @@
                 Способ оплаты
               </span>
               <span class="dictionary__value">
-                {{ this.order.paymentType }}
+                {{ orderInfo.paymentType }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -87,26 +87,26 @@
                 Комментарий
               </span>
               <span class="dictionary__value">
-                {{ this.order.comment }}
+                {{ orderInfo.comment }}
               </span>
             </li>
           </ul>
         </div>
 
         <div class="cart__block">
-          <ul class="cart__orders" v-if="order">
-            <OrderItem v-for="item in order.basket.items" :key="item.id" :item="item" />
+          <ul class="cart__orders" v-if="orderInfo">
+            <OrderItem v-for="item in orderInfo.basket.items" :key="item.id" :item="item" />
           </ul>
 
-          <div class="cart__total" v-if="order">
+          <div class="cart__total" v-if="orderInfo">
             <p>
-              Доставка: <b>{{ this.order.deliveryType.price }} ₽</b>
+              Доставка: <b>{{ this.orderInfo.deliveryType.price }} ₽</b>
             </p>
             <p>
-              Итого товаров: <b>{{ this.order.basket.items.length }}</b> на сумму
+              Итого товаров: <b>{{ this.orderInfo.basket.items.length }}</b> на сумму
               <b
                 >{{
-                  (Number(this.order.totalPrice) + Number(this.order.deliveryType.price))
+                  (Number(this.orderInfo.totalPrice) + Number(this.orderInfo.deliveryType.price))
                     | numberFormat
                 }}
                 ₽</b
@@ -114,6 +114,14 @@
             </p>
           </div>
         </div>
+        <vue-modaltor :visible="open" @hide="closeModal" :show-close-button="false">
+          <div class="cart__error form__error-block" style="text-align:center;">
+              <h4>Ошибка!</h4>
+              <p>
+                {{ orderErrorMessage }}
+              </p>
+          </div>
+        </vue-modaltor>
       </form>
     </section>
   </main>
@@ -122,36 +130,39 @@
 <script>
 import OrderItem from '@/components/Order/OrderItem.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   components: { OrderItem },
   filters: { numberFormat },
   computed: {
-    ...mapGetters('order', {
-      order: 'orderInfo',
-    }),
+    ...mapState('order', [
+      'orderInfo',
+      'open',
+      'orderError',
+      'orderErrorMessage',
+    ]),
   },
   watch: {
     '$route.params.id': {
       handler() {
         this.loadOrder();
       },
+      immediate: true,
     },
-    immediate: true,
-  },
-  created() {
-    this.loadOrder();
   },
   methods: {
-    ...mapActions('order', ['loadOrderInfo']),
+    ...mapActions('order', [
+      'loadOrderInfo',
+      'closeModal',
+    ]),
 
     loadOrder() {
       this.loadOrderInfo({
         userAccessKey: this.$store.state.userAccessKey,
         id: this.$route.params.id,
       }).catch(() => {
-        this.$router.push('/notFound');
+        this.$router.replace('/notFound');
       });
     },
   },

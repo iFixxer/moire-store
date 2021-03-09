@@ -30,27 +30,6 @@ const getters = {
   cartTotalQuantity(state, getters) {
     return getters.cartDetailproducts.reduce((acc, item) => item.quantity + acc, 0);
   },
-  productAddSending(state) {
-    return state.productAddSending;
-  },
-  cartAddingFailed(state) {
-    return state.cartAddingFailed;
-  },
-  productAdded(state) {
-    return state.productAdded;
-  },
-  open(state) {
-    return state.open;
-  },
-  cartErrors(state) {
-    return state.cartErrors;
-  },
-  cartError(state) {
-    return state.cartError;
-  },
-  cartErrorMessage(state) {
-    return state.cartErrorMessage;
-  },
 };
 
 const actions = {

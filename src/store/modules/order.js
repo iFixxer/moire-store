@@ -8,37 +8,15 @@ const state = () => ({
 
   orderSendingFailed: false,
 
-  orderDeliveryTypes: [],
-  orderPaymentTypes: [],
+  deliveryTypes: [],
+  paymentTypes: [],
 
   open: false,
   orderError: {},
   orderErrorMessage: '',
 });
 
-const getters = {
-  orderInfo(state) {
-    return state.orderInfo;
-  },
-  deliveryTypes(state) {
-    return state.orderDeliveryTypes;
-  },
-  paymentTypes(state) {
-    return state.orderPaymentTypes;
-  },
-  orderSendingFailed(state) {
-    return state.orderSendingFailed;
-  },
-  open(state) {
-    return state.open;
-  },
-  orderError(state) {
-    return state.orderError;
-  },
-  orderErrorMessage(state) {
-    return state.orderErrorMessage;
-  },
-};
+const getters = {};
 
 const actions = {
   loadOrderData(context, {
@@ -90,12 +68,16 @@ const actions = {
         context.commit('updateOrderInfo', response.data);
       })
       .catch((error) => {
-        if (error.response.status === 400) {
+        if (error.response.status === 500) {
+          context.commit('updateOrderError', error.response.data.error);
+          context.commit('updateOrderErrorMessage', error.response.data.error.message);
+          context.commit('updateOpen', true);
+        } else if (error.response.status === 400) {
           throw error;
         }
       });
   },
-  loadOrderPaymentTypes(context, { deliveryTypeId }) {
+  loadPaymentTypes(context, { deliveryTypeId }) {
     return axios
       .get(`${API_BASE_URL}/api/payments`, {
         params: {
@@ -103,12 +85,12 @@ const actions = {
         },
       })
       .then((response) => {
-        context.commit('updateOrderPaymentTypes', response.data);
+        context.commit('updatePaymentTypes', response.data);
       });
   },
-  loadOrderDeliveryTypes(context) {
+  loadDeliveryTypes(context) {
     return axios.get(`${API_BASE_URL}/api/deliveries`).then((response) => {
-      context.commit('updateOrderDeliveryTypes', response.data);
+      context.commit('updateDeliveryTypes', response.data);
     });
   },
   closeModal(context) {
@@ -123,11 +105,11 @@ const mutations = {
   updateOrderInfo(state, orderInfo) {
     state.orderInfo = orderInfo;
   },
-  updateOrderDeliveryTypes(state, orderDeliveryTypes) {
-    state.orderDeliveryTypes = orderDeliveryTypes;
+  updateDeliveryTypes(state, deliveryTypes) {
+    state.deliveryTypes = deliveryTypes;
   },
-  updateOrderPaymentTypes(state, orderPaymentTypes) {
-    state.orderPaymentTypes = orderPaymentTypes;
+  updatePaymentTypes(state, paymentTypes) {
+    state.paymentTypes = paymentTypes;
   },
   updateOrderSendingFailed(state, orderSendingFailed) {
     state.orderSendingFailed = orderSendingFailed;
