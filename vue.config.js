@@ -1,3 +1,4 @@
 module.exports = {
-  publicPath: '/moire-store/'
+  publicPath: '/moire-store/',
+  lintOnSave: false
 };

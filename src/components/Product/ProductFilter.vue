@@ -46,23 +46,29 @@
 
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
-        <ProductFilterRadioButtons :colors="colors" :select-color-ids.sync="selectColorIds">
-        </ProductFilterRadioButtons>
+        <ProductFilterColorsCheckbox 
+        :colors="colors" 
+        :select-color-ids.sync="selectColorIds"
+        >
+        </ProductFilterColorsCheckbox>
       </fieldset>
 
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
-        <ProductFilterCheckboxMaterials
-          :materials="materials"
-          :select-material-ids.sync="selectMaterialIds"
+        <ProductFilterCheckbox
+        :items="materials"
+        :select-ids.sync="selectMaterialIds"
         >
-        </ProductFilterCheckboxMaterials>
+        </ProductFilterCheckbox>
       </fieldset>
 
       <fieldset class="form__block">
         <legend class="form__legend">Коллекция</legend>
-        <ProductFilterCheckboxSeasons :seasons="seasons" :select-season-ids.sync="selectSeasonIds">
-        </ProductFilterCheckboxSeasons>
+        <ProductFilterCheckbox 
+        :items="seasons" 
+        :select-ids.sync="selectSeasonIds"
+        >
+        </ProductFilterCheckbox>
       </fieldset>
 
       <button class="filter__submit button button--primery" type="submit" :blocked="submitDisabled">
@@ -81,17 +87,15 @@
 </template>
 
 <script>
-import ProductFilterRadioButtons from '@/components/Product/ProductFilterRadioButtons.vue';
-import ProductFilterCheckboxMaterials from '@/components/Product/ProductFilterCheckboxMaterials.vue';
-import ProductFilterCheckboxSeasons from '@/components/Product/ProductFilterCheckboxSeasons.vue';
+import ProductFilterColorsCheckbox from '@/components/Product/ProductFilterColorsCheckbox.vue';
+import ProductFilterCheckbox from '@/components/Product/ProductFilterCheckbox.vue';
 import numberFormat from '@/helpers/numberFormat';
 import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {
-    ProductFilterRadioButtons,
-    ProductFilterCheckboxMaterials,
-    ProductFilterCheckboxSeasons,
+    ProductFilterColorsCheckbox,
+    ProductFilterCheckbox,
   },
   filters: {
     numberFormat,

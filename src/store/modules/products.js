@@ -62,44 +62,71 @@ const actions = {
         context.commit('updateProductError', error.response.data.error);
         if (error.response.status === 500) {
           context.commit('updateProductErrorMessage', error.response.data.error.message);
+          console.log('Ошибка загрузки списка продуктов');
         }
         context.commit('updateOpen', true);
       });
   },
   loadCategories(context) {
-    return axios.get(`${API_BASE_URL}/api/productCategories`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/productCategories`)
+    .then((response) => {
       context.commit('updateCategories', response.data.items);
+    })
+    .catch((error) => {
+      if (error.response.status === 500) {
+        context.commit('updateProductErrorMessage', error.response.data.error.message);
+        console.log('Ошибка загрузки списка категорий');
+      }
+      context.commit('updateOpen', true);
     });
   },
   loadColors(context) {
-    return axios.get(`${API_BASE_URL}/api/colors`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/colors`)
+    .then((response) => {
       context.commit('updateColors', response.data.items);
+    })
+    .catch((error) => {
+      if (error.response.status === 500) {
+        context.commit('updateProductErrorMessage', error.response.data.error.message);
+        console.log('Ошибка загрузки списка цветов');
+      }
+      context.commit('updateOpen', true);
     });
   },
   loadMaterials(context) {
-    return axios.get(`${API_BASE_URL}/api/materials`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/materials`)
+    .then((response) => {
       context.commit('updateMaterials', response.data.items);
+    })
+    .catch((error) => {
+      if (error.response.status === 500) {
+        context.commit('updateProductErrorMessage', error.response.data.error.message);
+        console.log('Ошибка загрузки списка материалов');
+      }
+      context.commit('updateOpen', true);
     });
   },
   loadSeasons(context) {
-    return axios.get(`${API_BASE_URL}/api/seasons`).then((response) => {
+    return axios.get(`${API_BASE_URL}/api/seasons`)
+    .then((response) => {
       context.commit('updateSeasons', response.data.items);
+    })
+    .catch((error) => {
+      if (error.response.status === 500) {
+        context.commit('updateProductErrorMessage', error.response.data.error.message);
+        console.log('Ошибка загрузки списка коллекий');
+      }
+      context.commit('updateOpen', true);
     });
   },
   loadProduct(context, { id }) {
-    context.commit('updateProductLoadingFailed', false);
     return axios
       .get(`${API_BASE_URL}/api/products/${id}`)
       .then((response) => {
         context.commit('updateProduct', response.data);
       })
       .catch((error) => {
-        context.commit('updateProductLoadingFailed', true);
-        if (error.response.status === 404) {
-          throw error;
-        } else {
-          context.commit('updateOpen', true);
-        }
+        if (error.response.status === 404) throw error;
       });
   },
   openModal(context) {

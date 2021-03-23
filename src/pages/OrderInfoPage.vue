@@ -106,8 +106,8 @@
               Итого товаров: <b>{{ this.orderInfo.basket.items.length }}</b> на сумму
               <b
                 >{{
-                  (Number(this.orderInfo.totalPrice) + Number(this.orderInfo.deliveryType.price))
-                    | numberFormat
+                  
+                    totalOrderPrice | numberFormat
                 }}
                 ₽</b
               >
@@ -142,6 +142,10 @@ export default {
       'orderError',
       'orderErrorMessage',
     ]),
+
+    totalOrderPrice() {
+      return (Number(this.orderInfo.totalPrice));
+    }
   },
   watch: {
     '$route.params.id': {

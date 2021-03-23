@@ -43,7 +43,7 @@ export default {
       handler(value) {
         if (typeof value.color !== 'undefined') this.currentColor = value.color;
         if (typeof value.gallery !== 'undefined') {
-          if (value.gallery != null) {
+          if (value.gallery !== null) {
             this.currentImage = value.gallery[0].file.url;
           } else {
             this.currentImage = noPhoto;

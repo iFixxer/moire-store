@@ -167,7 +167,6 @@ export default {
   computed: {
     ...mapState('products', [
       'product',
-      'productLoadingFailed',
     ]),
     ...mapState('cart', [
       'productAddSending',
